@@ -35,7 +35,7 @@ class _BottomNavUserState extends State<BottomNavUser> {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       showUnselectedLabels: true,
-      backgroundColor: const Color.fromRGBO(243, 244, 248, 1),
+      backgroundColor:  Colors.white,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(SolarIconsOutline.home),

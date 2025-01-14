@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:solar_icons/solar_icons.dart';
-import 'package:ukk_kantin/components/user_components/button_login.dart';
-import 'package:ukk_kantin/components/user_components/check.dart';
-import 'package:ukk_kantin/components/user_components/form_box_login.dart';
+import 'package:ukk_kantin/components/login_components/button_login.dart';
+import 'package:ukk_kantin/components/login_components/check.dart';
+import 'package:ukk_kantin/components/login_components/form_box_login.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({super.key});
@@ -45,6 +45,7 @@ class SignupPage extends StatelessWidget {
                 SizedBox(height: MediaQuery.sizeOf(context).height * 0.06),
                 ButtonLogin(
                   hintText: "Sign Up",
+                  route: '/login',
                 )
               ],
             ),

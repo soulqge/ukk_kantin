@@ -3,9 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ButtonLogin extends StatelessWidget {
   final String hintText;
-  // final String route;
+  final String route;
 
-  const ButtonLogin({super.key, required this.hintText, });
+  const ButtonLogin({super.key, required this.hintText, required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class ButtonLogin extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            // Navigator.pushNamed(context, route);
+             Navigator.pushNamed(context, route);
           },
           child: Text(
             hintText,
