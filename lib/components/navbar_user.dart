@@ -1,59 +1,35 @@
-// ignore_for_file: unused_field
-
 import 'package:flutter/material.dart';
 import 'package:solar_icons/solar_icons.dart';
 
-
-class BottomNavUser extends StatefulWidget {
+class BottomNavUser extends StatelessWidget {
   final int selectedItem;
-  const BottomNavUser({super.key, required this.selectedItem});
+  final Function(int) onItemTapped;
 
-  @override
-  State<BottomNavUser> createState() => _BottomNavUserState();
-}
-
-class _BottomNavUserState extends State<BottomNavUser> {
-
-  int _currentIndex = 0;
-
-  void changeSelectedNavBar(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-    if (index == 0) {
-      Navigator.pushReplacementNamed(context, '/home');
-    } else if (index == 1) {
-      Navigator.pushReplacementNamed(context, '/histori');
-    }
-    else if (index == 2) {
-      Navigator.pushReplacementNamed(context, '/account');
-    }
-  }
+  const BottomNavUser({
+    super.key,
+    required this.selectedItem,
+    required this.onItemTapped,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      showUnselectedLabels: true,
-      backgroundColor:  Colors.white,
+      showUnselectedLabels: false,
+      backgroundColor: Colors.white,
+      showSelectedLabels: false,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(SolarIconsOutline.home),
-          label: 'Home'
-        ),
+            icon: Icon(SolarIconsOutline.home), label: 'Home'),
         BottomNavigationBarItem(
-          icon: Icon(SolarIconsOutline.document1),
-          label: 'Histori'
-        ),
+            icon: Icon(SolarIconsOutline.document1), label: 'Histori'),
         BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle_outlined),
-          label: 'Profile'
-        ),
+            icon: Icon(SolarIconsOutline.user), label: 'Profile'),
       ],
       selectedItemColor: Colors.black,
       unselectedItemColor: Colors.black26,
-      currentIndex: widget.selectedItem,
-      onTap: changeSelectedNavBar,
+      currentIndex: selectedItem,
+      onTap: onItemTapped,
     );
   }
 }
