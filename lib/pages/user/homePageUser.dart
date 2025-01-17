@@ -30,7 +30,7 @@ class _HomepageuserState extends State<Homepageuser> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color.fromRGBO(255, 243, 240, 1),
+        backgroundColor: Colors.white,
         body: PageView(
           controller: _pageController,
           onPageChanged: onPageChanged,

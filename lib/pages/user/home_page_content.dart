@@ -21,7 +21,7 @@ class HomePageContent extends StatelessWidget {
             SizedBox(height: 28),
             HomeHint(hintHome: "Untuk Kamu"),
             SizedBox(height: 4),
-            Stan(), // Stan remains scrollable on its own
+            Stan(),
           ],
         ),
       ),
