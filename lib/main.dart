@@ -12,10 +12,7 @@ void main() {
       '/login': (context) => LoginPage(),
       '/signup': (context) => SignupPage(),
       '/choice': (context) => Choicepage(),
-      '/home_user': (context) => Homepageuser()
+      '/home_user': (context) => Homepageuser(),
     },
   ));
 }
-
-
-
