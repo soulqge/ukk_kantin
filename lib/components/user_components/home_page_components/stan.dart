@@ -19,36 +19,36 @@ class _StanState extends State<Stan> {
         'name': 'Pak Yoyok',
         'image': 'assets/placeholder.png',
         'makanan': [
-          {'name': 'Nasi Goreng', 'description': 'Nasi Goreng Enak'},
-          {'name': 'Sate Ayam', 'description': 'Sate Ayam Enak'},
+          {'name': 'Nasi Goreng', 'description': 'Nasi Goreng Enak', 'harga': 10000},
+          {'name': 'Sate Ayam', 'description': 'Sate Ayam Enak', 'harga': 12000},
         ],
         'minuman': [
-          {'name': 'Es Teh', 'description': 'Es Teh Enak'},
-          {'name': 'Air Mineral', 'description': 'Air Mineral Segar'},
+          {'name': 'Es Teh', 'description': 'Es Teh Enak', 'harga': 12000},
+          {'name': 'Air Mineral', 'description': 'Air Mineral Segar', 'harga': 12000},
         ],
       },
       {
         'name': 'Pak Aril',
         'image': 'assets/placeholder.png',
         'makanan': [
-          {'name': 'Mie Goreng', 'description': 'Mie Goreng Enak'},
-          {'name': 'Nasi Uduk', 'description': 'Nasi Uduk Lezat'},
+          {'name': 'Mie Goreng', 'description': 'Mie Goreng Enak', 'harga': 12000},
+          {'name': 'Nasi Uduk', 'description': 'Nasi Uduk Lezat', 'harga': 12000},
         ],
         'minuman': [
-          {'name': 'Es Jeruk', 'description': 'Es Jeruk Segar'},
-          {'name': 'Kopi Hitam', 'description': 'Kopi Hitam Mantap'},
+          {'name': 'Es Jeruk', 'description': 'Es Jeruk Segar', 'harga': 12000},
+          {'name': 'Kopi Hitam', 'description': 'Kopi Hitam Mantap', 'harga': 12000},
         ],
       },
       {
         'name': 'Bu Cihuy',
         'image': 'assets/placeholder.png',
         'makanan': [
-          {'name': 'Mie Ayam', 'description': 'Mie Ayam Enak'},
-          {'name': 'Nasi Katsu', 'description': 'Nasi Katsu Lezat'},
+          {'name': 'Mie Ayam', 'description': 'Mie Ayam Enak', 'harga': 12000},
+          {'name': 'Nasi Katsu', 'description': 'Nasi Katsu Lezat', 'harga': 12000},
         ],
         'minuman': [
-          {'name': 'Es Milo', 'description': 'Es Jeruk Segar'},
-          {'name': 'Kopi', 'description': 'Kopi Mantap'},
+          {'name': 'Es Milo', 'description': 'Es Jeruk Segar', 'harga': 12000},
+          {'name': 'Kopi', 'description': 'Kopi Mantap', 'harga': 12000},
         ],
       },
     ];
