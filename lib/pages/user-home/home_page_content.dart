@@ -17,7 +17,7 @@ class HomePageContent extends StatelessWidget {
           children: [
             HelloUser(),
             SizedBox(height: 48),
-            SearchBarUser(),
+            SearchBarUser(width: double.infinity,),
             SizedBox(height: 28),
             HomeHint(hintHome: "Untuk Kamu"),
             SizedBox(height: 4),

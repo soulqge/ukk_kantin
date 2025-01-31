@@ -15,7 +15,7 @@ class ProfilePageContent extends StatelessWidget {
         children: [
           HelloUser(),
           SizedBox(height: 48),
-          SearchBarUser(),
+          SearchBarUser(width: 10,),
           SizedBox(height: 28),
           HomeHint(hintHome: "Untuk Profile",),
           SizedBox(height: 4),

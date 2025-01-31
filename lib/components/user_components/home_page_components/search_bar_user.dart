@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SearchBarUser extends StatelessWidget {
-  const SearchBarUser({super.key});
+
+  final double width;
+
+  const SearchBarUser({super.key, required this.width});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: width,
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
         color: Colors.white,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:ukk_kantin/components/user_components/menu_components/menu_card.dart';
-import 'package:ukk_kantin/pages/user/checkout_page.dart';
+import 'package:ukk_kantin/pages/user-home/checkout_page.dart';
 
 class Menupage extends StatefulWidget {
   final Map<String, dynamic> stans;
@@ -13,6 +14,8 @@ class Menupage extends StatefulWidget {
 }
 
 class _MenupageState extends State<Menupage> {
+   final formatCurrency = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
+
   Map<String, int> itemCounts = {};
 
   @override
