@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:ukk_kantin/components/user_components/menu_components/menu_card.dart';
-import 'package:ukk_kantin/pages/user-home/checkout_page.dart';
+import 'package:ukk_kantin/pages/user/home/checkout_page.dart';
 
 class Menupage extends StatefulWidget {
   final Map<String, dynamic> stans;

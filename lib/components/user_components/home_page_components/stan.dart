@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/user_components/menu_components/menu_button.dart';
-import 'package:ukk_kantin/pages/user-home/menuPage.dart';
+import 'package:ukk_kantin/pages/user/home/menuPage.dart';
 
 class Stan extends StatefulWidget {
   const Stan({super.key});

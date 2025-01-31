@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ukk_kantin/components/navbar_user.dart';
-import 'package:ukk_kantin/pages/history/history_page_content.dart';
-import 'package:ukk_kantin/pages/user-home/home_page_content.dart';
-import 'package:ukk_kantin/pages/user-home/profile_page_content.dart';
+import 'package:ukk_kantin/pages/user/history/history_page_content.dart';
+import 'package:ukk_kantin/pages/user/home/home_page_content.dart';
+// import 'package:ukk_kantin/pages/user-home/profile_page_content.dart';
 
 class Homepageuser extends StatefulWidget {
   const Homepageuser({super.key});
@@ -37,7 +37,7 @@ class _HomepageuserState extends State<Homepageuser> {
           children: const [
             HomePageContent(),
             HistoryPageContent(),
-            ProfilePageContent(),
+            // ProfilePageContent(),
           ],
         ),
         bottomNavigationBar: BottomNavUser(

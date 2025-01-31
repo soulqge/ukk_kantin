@@ -3,7 +3,7 @@ import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/user_components/history_page_components/button_search.dart';
 import 'package:ukk_kantin/components/user_components/history_page_components/hello_act.dart';
 import 'package:ukk_kantin/components/user_components/home_page_components/search_bar_user.dart';
-import 'package:ukk_kantin/pages/history/list_tran.dart';
+import 'package:ukk_kantin/pages/user/history/list_tran.dart';
 
 class HistoryPageContent extends StatelessWidget {
   const HistoryPageContent({super.key});
