@@ -13,7 +13,7 @@ class ProfilePageContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HelloUser(),
+          // HelloUser(),
           SizedBox(height: 48),
           SearchBarUser(width: 10,),
           SizedBox(height: 28),

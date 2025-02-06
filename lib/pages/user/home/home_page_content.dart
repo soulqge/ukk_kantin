@@ -15,7 +15,7 @@ class HomePageContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HelloUser(),
+            HelloUser(user: 'Faril', icon: Icons.abc, iconColor: Colors.white,),
             SizedBox(height: 48),
             SearchBarUser(width: double.infinity,),
             SizedBox(height: 28),
