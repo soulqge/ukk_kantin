@@ -38,6 +38,7 @@ class __ListTranAdminState extends State<ListTranAdmin> {
         'jam': "10:24 AM",
         'status': "Selesai",
       },
+      
     ];
 
     return ListView.builder(
