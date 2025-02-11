@@ -14,7 +14,8 @@ class Menupage extends StatefulWidget {
 }
 
 class _MenupageState extends State<Menupage> {
-   final formatCurrency = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
+  final formatCurrency =
+      NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
 
   Map<String, int> itemCounts = {};
 
@@ -39,16 +40,14 @@ class _MenupageState extends State<Menupage> {
       if (item.isEmpty) {
         item = widget.stans['minuman'].firstWhere(
           (element) => element['name'] == entry.key,
-          orElse: () =>
-              <String, Object>{},
+          orElse: () => <String, Object>{},
         );
       }
 
       return {
         'name': entry.key,
         'count': entry.value,
-        'price':
-            item.isEmpty ? 0 : item['harga'],
+        'price': item.isEmpty ? 0 : item['harga'],
       };
     }).toList();
   }
@@ -173,7 +172,9 @@ class _MenupageState extends State<Menupage> {
         const SizedBox(height: 16),
         ...items.map((item) {
           return ItemCard(
-              image: widget.stans['image'],
+              image: item.containsKey('imageItem')
+                  ? item['imageItem']
+                  : 'assets/placeholder.png',
               name: item['name'],
               description: item['description'],
               count: itemCounts[item['name']]!,

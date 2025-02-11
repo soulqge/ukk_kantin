@@ -19,36 +19,90 @@ class _StanState extends State<Stan> {
         'name': 'Pak Yoyok',
         'image': 'assets/placeholder.png',
         'makanan': [
-          {'name': 'Nasi Goreng', 'description': 'Nasi Goreng Enak', 'harga': 10000},
-          {'name': 'Sate Ayam', 'description': 'Sate Ayam Enak', 'harga': 12000},
+          {
+            'name': 'Nasi Goreng',
+            'description': 'Nasi Goreng Enak',
+            'harga': 10000,
+            'imageItem': 'assets/place2.jpeg'
+          },
+          {
+            'name': 'Sate Ayam',
+            'description': 'Sate Ayam Enak',
+            'harga': 12000,
+            'imageItem': 'assets/place2.jpeg'
+          },
         ],
         'minuman': [
           {'name': 'Es Teh', 'description': 'Es Teh Enak', 'harga': 12000},
-          {'name': 'Air Mineral', 'description': 'Air Mineral Segar', 'harga': 12000},
+          {
+            'name': 'Air Mineral',
+            'description': 'Air Mineral Segar',
+            'harga': 12000,
+            'imageItem': 'assets/place2.jpeg'
+          },
         ],
       },
       {
         'name': 'Pak Aril',
         'image': 'assets/placeholder.png',
         'makanan': [
-          {'name': 'Mie Goreng', 'description': 'Mie Goreng Enak', 'harga': 12000},
-          {'name': 'Nasi Uduk', 'description': 'Nasi Uduk Lezat', 'harga': 12000},
+          {
+            'name': 'Mie Goreng',
+            'description': 'Mie Goreng Enak',
+            'harga': 12000,
+            'imageItem': 'assets/place2.jpeg'
+          },
+          {
+            'name': 'Nasi Uduk',
+            'description': 'Nasi Uduk Lezat',
+            'harga': 12000,
+            'imageItem': 'assets/place2.jpeg'
+          },
         ],
         'minuman': [
-          {'name': 'Es Jeruk', 'description': 'Es Jeruk Segar', 'harga': 12000},
-          {'name': 'Kopi Hitam', 'description': 'Kopi Hitam Mantap', 'harga': 12000},
+          {
+            'name': 'Es Jeruk',
+            'description': 'Es Jeruk Segar',
+            'harga': 12000,
+            'imageItem': 'assets/place2.jpeg'
+          },
+          {
+            'name': 'Kopi Hitam',
+            'description': 'Kopi Hitam Mantap',
+            'harga': 12000,
+            'imageItem': 'assets/place2.jpeg'
+          },
         ],
       },
       {
         'name': 'Bu Cihuy',
         'image': 'assets/placeholder.png',
         'makanan': [
-          {'name': 'Mie Ayam', 'description': 'Mie Ayam Enak', 'harga': 12000},
-          {'name': 'Nasi Katsu', 'description': 'Nasi Katsu Lezat', 'harga': 12000},
+          {
+            'name': 'Mie Ayam',
+            'description': 'Mie Ayam Enak',
+            'harga': 12000,
+            'imageItem': 'assets/place2.jpeg'
+          },
+          {
+            'name': 'Nasi Katsu',
+            'description': 'Nasi Katsu Lezat',
+            'harga': 12000
+          },
         ],
         'minuman': [
-          {'name': 'Es Milo', 'description': 'Es Jeruk Segar', 'harga': 12000},
-          {'name': 'Kopi', 'description': 'Kopi Mantap', 'harga': 12000},
+          {
+            'name': 'Es Milo',
+            'description': 'Es Jeruk Segar',
+            'harga': 12000,
+            'imageItem': 'assets/place2.jpeg'
+          },
+          {
+            'name': 'Kopi',
+            'description': 'Kopi Mantap',
+            'harga': 12000,
+            'imageItem': 'assets/place2.jpeg'
+          },
         ],
       },
     ];

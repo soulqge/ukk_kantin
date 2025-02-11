@@ -6,7 +6,7 @@ import 'package:ukk_kantin/pages/loginPage.dart';
 import 'package:ukk_kantin/pages/signupPage.dart';
 import 'package:ukk_kantin/pages/user/home/homePageUser.dart';
 
-void main() {
+void main() { 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     initialRoute: '/home_admin',

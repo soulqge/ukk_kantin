@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:solar_icons/solar_icons.dart';
-import 'package:ukk_kantin/components/admin_components/admin_hint.dart';
 import 'package:ukk_kantin/components/admin_components/hello_admin.dart';
-import 'package:ukk_kantin/pages/admin/home/list_tran_admin.dart';
+import 'package:ukk_kantin/pages/admin/menu_admin/menu_list_admin.dart';
 
 class MenuAdminContent extends StatefulWidget {
   const MenuAdminContent({super.key});
@@ -14,26 +13,42 @@ class MenuAdminContent extends StatefulWidget {
 class _MenuAdminContentState extends State<MenuAdminContent> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              HelloAdmin(
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: HelloAdmin(
                 kantin: 'Daftar Makanan',
                 icon: SolarIconsBold.addCircle,
                 iconColor: Colors.red,
                 route: '/tambah_menu',
               ),
-              SizedBox(height: 48),
-              AdminHint(hint: "Daftar Transaksi"),
-              SizedBox(height: 12),
-              ListTranAdmin()
-            ],
-          ),
+            ),
+            TabBar(
+              labelColor: Colors.red,
+              unselectedLabelColor: Colors.black54,
+              indicatorColor: Colors.red,
+              tabs: [
+                Tab(text: "Semua"),
+                Tab(text: "Makanan"),
+                Tab(text: "Minuman"),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  MenuListAdmin(),
+                  MenuListAdmin(category: "Makanan"),
+                  MenuListAdmin(category: "Minuman"),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
