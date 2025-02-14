@@ -93,26 +93,20 @@ class MenuListAdmin extends StatelessWidget {
                             : Icon(Icons.cancel, color: Colors.red),
                       ],
                     ),
-                    SizedBox(height: 9),
+                    SizedBox(height: 20),
                     Row(
                       children: [
-                        Container(
-                          padding: EdgeInsets.fromLTRB(12, 6, 12, 6),
-                          decoration: BoxDecoration(
-                              color: Color.fromRGBO(248, 226, 221, 1),
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Text(item["category"],
-                              style: GoogleFonts.nunitoSans(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color.fromRGBO(240, 94, 94, 1))),
-                        ),
+                        Text("#${item["category"]}",
+                            style: GoogleFonts.nunitoSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Color.fromRGBO(240, 94, 94, 1))),
                         Spacer(),
                         Text(item["price"],
                             style: TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 18),
                     Row(
                       children: [
                         for (int i = 0; i < rating; i++)
@@ -120,7 +114,14 @@ class MenuListAdmin extends StatelessWidget {
                         for (int i = rating; i < 5; i++)
                           Icon(Icons.star_border, color: Colors.grey, size: 16),
                         Spacer(),
-                        TextButton(onPressed: () {}, child: Text("data"))
+                        InkWell(
+                            onTap: () {},
+                            child: Text(
+                              "Edit",
+                              style: GoogleFonts.nunitoSans(
+                                  fontSize: 14,
+                                  color: Color.fromRGBO(240, 94, 94, 1)),
+                            ))
                       ],
                     ),
                   ],

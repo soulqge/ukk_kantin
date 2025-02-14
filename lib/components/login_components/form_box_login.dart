@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FormBoxLogin extends StatelessWidget {
-
   final String hintText;
   final IconData icon;
+  final TextEditingController? controller;
 
-  const FormBoxLogin({super.key, required this.icon, required this.hintText});
+  const FormBoxLogin(
+      {super.key, required this.icon, required this.hintText, this.controller});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       cursorColor: Colors.black,
       decoration: InputDecoration(
           enabledBorder: UnderlineInputBorder(

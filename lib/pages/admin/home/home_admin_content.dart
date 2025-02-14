@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ukk_kantin/components/admin_components/admin_hint.dart';
 import 'package:ukk_kantin/components/admin_components/hello_admin.dart';
 import 'package:ukk_kantin/components/admin_components/order_box.dart';
@@ -14,6 +14,28 @@ class HomeAdminContent extends StatefulWidget {
 }
 
 class _HomeAdminContentState extends State<HomeAdminContent> {
+  final FlutterSecureStorage storage = FlutterSecureStorage();
+  String kantinName = "Loading...";
+
+  @override
+  void initState() {
+    super.initState();
+    loadAdminData();
+  }
+
+  Future<void> loadAdminData() async {
+    String? username = await storage.read(key: "username");
+    if (username != null) {
+      setState(() {
+        kantinName = username;
+      });
+    } else {
+      setState(() {
+        kantinName = "Admin";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,13 +47,13 @@ class _HomeAdminContentState extends State<HomeAdminContent> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HelloAdmin(
-                kantin: 'Pak Aril',
-                icon: Icons.abc,
+                kantin: kantinName,
+                icon: Icons.person,
                 iconColor: Colors.red,
                 route: '/home_admin',
               ),
               SizedBox(height: 16),
-              OrderBox(running: 06, request: 09),
+              OrderBox(running: 6, request: 9),
               SizedBox(height: 16),
               Pemasukan(penghasilan: 3600000),
               SizedBox(height: 34),

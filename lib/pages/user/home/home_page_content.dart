@@ -5,7 +5,10 @@ import 'package:ukk_kantin/components/user_components/home_page_components/searc
 import 'package:ukk_kantin/components/user_components/home_page_components/stan.dart';
 
 class HomePageContent extends StatelessWidget {
-  const HomePageContent({super.key});
+  final String userName; // <-- Receive username
+  final String makerId;
+
+  const HomePageContent({super.key, required this.userName, required this.makerId});
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +18,10 @@ class HomePageContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HelloUser(user: 'Faril', icon: Icons.abc, iconColor: Colors.white,),
+            HelloUser(
+                user: userName, icon: Icons.person, iconColor: Colors.white),
             SizedBox(height: 48),
-            SearchBarUser(width: double.infinity,),
+            SearchBarUser(width: double.infinity),
             SizedBox(height: 28),
             HomeHint(hintHome: "Untuk Kamu"),
             SizedBox(height: 4),

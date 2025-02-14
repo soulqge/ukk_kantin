@@ -4,14 +4,14 @@ import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/login_components/button_login.dart';
 import 'package:ukk_kantin/components/login_components/choice_options.dart';
 
-class Choicepage extends StatefulWidget {
-  const Choicepage({super.key});
+class ChoicePage extends StatefulWidget {
+  const ChoicePage({super.key});
 
   @override
-  State<Choicepage> createState() => _ChoicepageState();
+  State<ChoicePage> createState() => _ChoicePageState();
 }
 
-class _ChoicepageState extends State<Choicepage> {
+class _ChoicePageState extends State<ChoicePage> {
   String? selectedRole;
 
   void onRoleSelected(String role) {
@@ -36,43 +36,50 @@ class _ChoicepageState extends State<Choicepage> {
               SizedBox(height: 64),
               ChoiceOptions(
                 icon: SolarIconsBold.user,
-                role: "Students",
-                isSelected: selectedRole == "Students",
-                onSelected: () => onRoleSelected("Students"),
+                role: "siswa",
+                isSelected: selectedRole == "siswa",
+                onSelected: () => onRoleSelected("siswa"),
               ),
               SizedBox(height: 24),
               ChoiceOptions(
                 icon: SolarIconsBold.cartLarge,
-                role: "Booth Owner",
-                isSelected: selectedRole == "Booth Owner",
-                onSelected: () => onRoleSelected("Booth Owner"),
+                role: "admin_stan",
+                isSelected: selectedRole == "admin_stan",
+                onSelected: () => onRoleSelected("admin_stan"),
               ),
               SizedBox(height: 64),
               selectedRole != null
-                  ? Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            selectedRole == "Students"
-                                ? "Student"
-                                : "Booth Owner",
-                            style: GoogleFonts.outfit(
-                                fontSize: 22, fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            selectedRole == "Students"
-                                ? "Sebagai siswa kamu harus mematuhi peraturan yang sudah ditetapkan oleh sekolah tentang peraturan yang ada di kantin. Melakukan pembayaran dengan jujur dan juga menjaga kebersihan kantin."
-                                : "Sebagai pemilik stan kamu harus mematuhi peraturan yang sudah ditetapkan oleh sekolah tentang peraturan yang ada di kantin. Melakukan pengecekan pengeluaran dengan tepat dan juga menjaga kebersihan kantin.",
-                            style: GoogleFonts.nunitoSans(
-                                fontSize: 14, fontWeight: FontWeight.w500),
-                          ),
-                        ],
-                      ),
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          selectedRole == "siswa" ? "Siswa" : "Admin Stan",
+                          style: GoogleFonts.outfit(
+                              fontSize: 22, fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          selectedRole == "siswa"
+                              ? "Sebagai siswa kamu harus mematuhi peraturan yang sudah ditetapkan oleh sekolah tentang peraturan yang ada di kantin."
+                              : "Sebagai pemilik stan kamu harus mematuhi peraturan yang sudah ditetapkan oleh sekolah.",
+                          style: GoogleFonts.nunitoSans(
+                              fontSize: 14, fontWeight: FontWeight.w500),
+                        ),
+                      ],
                     )
                   : SizedBox.shrink(),
               Expanded(child: Container()),
-              ButtonLogin(hintText: "Next", route: '/login',)
+              selectedRole != null
+                  ? ButtonLogin(
+                      hintText: "Next",
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/login',
+                          arguments: selectedRole, // Kirim role ke LoginPage
+                        );
+                      },
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
         ),
