@@ -1,22 +1,29 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   final String baseUrl = 'https://ukk-p2.smktelkom-mlg.sch.id/api/';
-  final String makerID = '23'; // Jika tidak perlu, bisa dihapus
+  final String makerID = '23';
 
+  
   Future<String?> _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('access_token');
+    String? token = prefs.getString('access_token');
+    print("Token diambil: $token"); 
+    return token;
   }
 
+ 
   Future<void> _saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('access_token', token);
+    print("Token disimpan: $token"); 
   }
 
+  
   Future<bool> registerStudent({
     required String namaSiswa,
     required String alamat,
@@ -52,6 +59,7 @@ class ApiService {
     }
   }
 
+  
   Future<bool> registerStand({
     required String namaStan,
     required String namaPemilik,
@@ -82,6 +90,7 @@ class ApiService {
     }
   }
 
+  
   Future<Map<String, dynamic>> loginSiswa({
     required String username,
     required String password,
@@ -89,6 +98,7 @@ class ApiService {
     return _login('${baseUrl}login_siswa', username, password, 'siswa');
   }
 
+  
   Future<Map<String, dynamic>> loginStand({
     required String username,
     required String password,
@@ -96,21 +106,20 @@ class ApiService {
     return _login('${baseUrl}login_stan', username, password, 'admin_stan');
   }
 
+ 
   Future<Map<String, dynamic>> _login(
       String url, String username, String password, String roleType) async {
     var headers = {
       'Content-Type': 'application/json',
-      'makerID': makerID, // Jika tidak perlu, hapus saja
+      'makerID': makerID,
     };
 
     var body = jsonEncode({'username': username, 'password': password});
 
-    try {
+    // try {
       var response =
           await http.post(Uri.parse(url), headers: headers, body: body);
-
-      print("Login Response ($roleType) Status Code: ${response.statusCode}");
-      print("Raw Response: ${response.body}");
+      print("Login Response ($roleType): ${response.body}");
 
       if (response.statusCode != 200) {
         return {'success': false, 'message': 'Server error'};
@@ -124,40 +133,35 @@ class ApiService {
         return {'success': false, 'message': 'Invalid response format'};
       }
 
-      if (responseData.containsKey('access_token')) {
+      if (responseData['access_token']!=null) {
         String token = responseData['access_token'];
         String username = responseData['user']['username'];
         String role = responseData['user']['role'];
         String id = responseData['user']['id'].toString();
 
-        await _saveToken(token);
+        await _saveToken(token); 
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('role', role);
         await prefs.setString('username', username);
-        await prefs.setString('user_id', id);
 
-        return {
-          'success': true,
-          'role': role,
-          'username': username,
-          'token': token
-        };
+        return {'success': true, 'role': role, 'username': username, 'token': token};
       } else {
         return {
           'success': false,
           'message': responseData['message'] ?? 'Login gagal'
         };
       }
-    } catch (e) {
-      print('Exception occurred: $e');
-      return {'success': false, 'message': 'Terjadi kesalahan'};
-    }
+    // } catch (e) {
+    //   print('Exception occurred: $e');
+    //   return {'success': false, 'message': 'Terjadi kesalahan'};
+    // }
   }
 
   Future<Map<String, String>> _getAuthHeaders() async {
     String? token = await _getToken();
     return {
+      // 'Content-Type': 'application/json',
       'makerID': makerID,
       if (token != null) 'Authorization': 'Bearer $token',
     };

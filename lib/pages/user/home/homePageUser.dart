@@ -61,7 +61,7 @@ class _HomepageuserState extends State<Homepageuser> {
         });
       } else {
         print("Error: ${response.body}");
-        await prefs.remove("auth_token"); // Hapus token jika gagal
+        await prefs.remove("auth_token");
         Navigator.pushReplacementNamed(context, "/login");
       }
     } catch (e) {
