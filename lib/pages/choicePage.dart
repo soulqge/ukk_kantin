@@ -20,6 +20,14 @@ class _ChoicePageState extends State<ChoicePage> {
     });
   }
 
+  void navigateToNextPage() {
+    if (selectedRole == "siswa") {
+      Navigator.pushNamed(context, '/signup_siswa', arguments: selectedRole);
+    } else if (selectedRole == "admin_stan") {
+      Navigator.pushNamed(context, '/signup_admin', arguments: selectedRole);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -71,13 +79,7 @@ class _ChoicePageState extends State<ChoicePage> {
               selectedRole != null
                   ? ButtonLogin(
                       hintText: "Next",
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/login',
-                          arguments: selectedRole, // Kirim role ke LoginPage
-                        );
-                      },
+                      onPressed: navigateToNextPage,
                     )
                   : SizedBox.shrink(),
             ],

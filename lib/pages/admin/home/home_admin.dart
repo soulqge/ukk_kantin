@@ -1,10 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:ukk_kantin/components/admin_components/admin_hint.dart';
+import 'package:ukk_kantin/components/admin_components/hello_admin.dart';
+import 'package:ukk_kantin/components/admin_components/order_box.dart';
+import 'package:ukk_kantin/components/admin_components/pemasukan.dart';
 import 'package:ukk_kantin/components/navbar_admin.dart';
-import 'package:ukk_kantin/pages/admin/home/home_admin_content.dart';
+import 'package:ukk_kantin/pages/admin/home/list_tran_admin.dart';
 import 'package:ukk_kantin/pages/admin/menu_admin/menu_admin_content.dart';
+import 'package:ukk_kantin/services/login_services.dart';
 
 class HomeAdminPage extends StatefulWidget {
   const HomeAdminPage({super.key});
@@ -15,7 +20,6 @@ class HomeAdminPage extends StatefulWidget {
 
 class _HomeAdminPageState extends State<HomeAdminPage> {
   final PageController _pageController = PageController(initialPage: 0);
-  final FlutterSecureStorage storage = FlutterSecureStorage();
 
   int _currentPage = 0;
   String? userRole;
@@ -29,39 +33,25 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
   }
 
   Future<void> checkAuthentication() async {
-    try {
-      String? token = await storage.read(key: "auth_token");
-      String? storedMakerId = await storage.read(key: "makerID");
+    final prefs = await SharedPreferences.getInstance();
+    final apiService = ApiService();
 
-      if (token == null) {
-        if (mounted) Navigator.pushReplacementNamed(context, "/login");
-        return;
+    final userData = await apiService.fetchUserData();
+    if (userData == null) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, "/login");
       }
+      return;
+    }
 
-      final response = await http.get(
-        Uri.parse('https://ukk-p2.smktelkom-mlg.sch.id/api/get_stan'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-          'makerID': storedMakerId ?? '23',
-        },
-      );
+    if (mounted) {
+      setState(() {
+        userRole = userData['role'] ?? "Admin";
+        userName = userData['data']?['nama_pemilik'] ?? "Kantin";
+        makerId = prefs.getString("makerID");
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (mounted) {
-          setState(() {
-            userRole = data['role'];
-            userName = data['username'];
-            makerId = storedMakerId;
-          });
-        }
-      } else {
-        await storage.delete(key: "auth_token");
-        if (mounted) Navigator.pushReplacementNamed(context, "/login");
-      }
-    } catch (e) {
-      print("Error during authentication check: $e");
+        prefs.setString("username", userName!);
+      });
     }
   }
 
@@ -85,15 +75,77 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
             : PageView(
                 controller: _pageController,
                 onPageChanged: onPageChanged,
-                children: const [
-                  HomeAdminContent(),
-                  MenuAdminContent(),
-                  HomeAdminContent(),
+                children: [
+                  HomeAdminContent(userName: userName ?? "Admin"),
+                  const MenuAdminContent(),
+                  HomeAdminContent(userName: userName ?? "Admin"),
                 ],
               ),
         bottomNavigationBar: BottomNavAdmin(
           selectedItem: _currentPage,
           onItemTapped: onItemTapped,
+        ),
+      ),
+    );
+  }
+}
+
+class HomeAdminContent extends StatefulWidget {
+  final String userName;
+
+  const HomeAdminContent({super.key, required this.userName});
+
+  @override
+  State<HomeAdminContent> createState() => _HomeAdminContentState();
+}
+
+class _HomeAdminContentState extends State<HomeAdminContent> {
+  String kantinName = "Loading...";
+
+  @override
+  void initState() {
+    super.initState();
+    loadAdminData();
+  }
+
+  Future<void> loadAdminData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? username = prefs.getString("username");
+
+    if (mounted) {
+      setState(() {
+        kantinName = username ?? widget.userName;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              HelloAdmin(
+                kantin:
+                    "Hello ${kantinName[0].toUpperCase()}${kantinName.substring(1)}",
+                icon: Icons.person,
+                iconColor: Colors.red,
+                route: '/home_admin',
+              ),
+              SizedBox(height: 16),
+              OrderBox(running: 6, request: 9),
+              SizedBox(height: 16),
+              Pemasukan(penghasilan: 3600000),
+              SizedBox(height: 34),
+              AdminHint(hint: "Daftar Transaksi"),
+              SizedBox(height: 12),
+              ListTranAdmin()
+            ],
+          ),
         ),
       ),
     );

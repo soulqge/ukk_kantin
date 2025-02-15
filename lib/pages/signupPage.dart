@@ -1,12 +1,100 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/login_components/button_login.dart';
 import 'package:ukk_kantin/components/login_components/check.dart';
 import 'package:ukk_kantin/components/login_components/form_box_login.dart';
+import 'package:ukk_kantin/services/login_services.dart';
 
-class SignupPage extends StatelessWidget {
+class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
+
+  @override
+  State<SignupPage> createState() => _SignupPageState();
+}
+
+class _SignupPageState extends State<SignupPage> {
+  final TextEditingController namaLengkapController = TextEditingController();
+  final TextEditingController alamatController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController noTelpController = TextEditingController();
+  File? _image;
+  bool isLoading = false;
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> registerUser() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    String namaLengkap = namaLengkapController.text.trim();
+    String alamat = alamatController.text.trim();
+    String password = passwordController.text.trim();
+    String telp = noTelpController.text.trim();
+    String username = usernameController.text.trim();
+
+    print("=== DEBUGGER ===");
+    print("Nama Lengkap: $namaLengkap");
+    print("Alamat: $alamat");
+    print("Username: $username");
+    print("No Telp: $telp");
+    print("Password: $password");
+    print("Foto Profil: ${_image?.path ?? 'Tidak Ada'}");
+
+    if (namaLengkap.isEmpty ||
+        alamat.isEmpty ||
+        password.isEmpty ||
+        username.isEmpty ||
+        telp.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Harap isi semua field!')),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      var response = await ApiService().registerStudent(
+        namaSiswa: namaLengkap,
+        alamat: alamat,
+        telp: telp,
+        username: username,
+        password: password,
+        foto: _image,
+      );
+
+      print("Response dari API: $response");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Registrasi berhasil! Silakan login.')),
+      );
+
+      Navigator.pushReplacementNamed(context, '/login');
+    } catch (e) {
+      print("Error saat register: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan saat registrasi.')),
+      );
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,34 +107,59 @@ class SignupPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Sign Up",
-                  style: GoogleFonts.outfit(
-                      fontSize: 32, fontWeight: FontWeight.w800),
+                Text("Sign Up",
+                    style: GoogleFonts.outfit(
+                        fontSize: 32, fontWeight: FontWeight.w800)),
+                SizedBox(height: 50),
+                Center(
+                  child: GestureDetector(
+                    onTap: _pickImage,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.grey[300],
+                      backgroundImage:
+                          _image != null ? FileImage(_image!) : null,
+                      child: _image == null
+                          ? Icon(Icons.camera_alt,
+                              size: 40, color: Colors.white)
+                          : null,
+                    ),
+                  ),
                 ),
-                SizedBox(height: 102),
-                FormBoxLogin(
-                    icon: SolarIconsOutline.user, hintText: "Full Name"),
                 SizedBox(height: 32),
                 FormBoxLogin(
-                    icon: SolarIconsOutline.letter, hintText: "Email ID"),
+                    controller: namaLengkapController,
+                    icon: SolarIconsOutline.user,
+                    hintText: "Nama Siswa"),
                 SizedBox(height: 32),
                 FormBoxLogin(
-                    icon: SolarIconsOutline.lockPassword, hintText: "Password"),
+                    controller: alamatController,
+                    icon: SolarIconsOutline.map,
+                    hintText: "Alamat"),
                 SizedBox(height: 32),
                 FormBoxLogin(
-                    icon: SolarIconsOutline.lockPassword, hintText: "Confirm Password"),
-                SizedBox(height: 102),
+                    controller: noTelpController,
+                    icon: SolarIconsOutline.phone,
+                    hintText: "No Telp"),
+                SizedBox(height: 32),
+                FormBoxLogin(
+                    controller: usernameController,
+                    icon: SolarIconsOutline.user,
+                    hintText: "Username"),
+                SizedBox(height: 32),
+                FormBoxLogin(
+                    controller: passwordController,
+                    icon: SolarIconsOutline.lockPassword,
+                    hintText: "Password"),
+                SizedBox(height: 50),
                 CheckText(
-                  hintText: "Already Have An Account?",
-                  hintButton: "Login Here",
-                  route: '/login',
-                ),
+                    hintText: "Sudah punya akun?",
+                    hintButton: "Login di sini",
+                    route: '/login'),
                 SizedBox(height: MediaQuery.sizeOf(context).height * 0.06),
-                ButtonLogin(
-                  hintText: "Sign Up",
-                  route: '/login',
-                )
+                isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ButtonLogin(hintText: "Sign Up", onPressed: registerUser),
               ],
             ),
           ),

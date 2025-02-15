@@ -4,6 +4,7 @@ import 'package:ukk_kantin/pages/admin/menu_admin/add_menu.dart';
 import 'package:ukk_kantin/pages/choicePage.dart';
 import 'package:ukk_kantin/pages/loginPage.dart';
 import 'package:ukk_kantin/pages/signupPage.dart';
+import 'package:ukk_kantin/pages/signupPage_admin.dart';
 import 'package:ukk_kantin/pages/user/home/homePageUser.dart';
 
 void main() async {
@@ -13,7 +14,8 @@ void main() async {
     initialRoute: '/choice',
     routes: {
       '/login': (context) => LoginPage(),
-      '/signup': (context) => SignupPage(),
+      '/signup_siswa': (context) => SignupPage(),
+      '/signup_admin': (context) => SignupPageAdmin(),
       '/choice': (context) => ChoicePage(),
       '/home_user': (context) => Homepageuser(),
       '/home_admin': (context) => HomeAdminPage(),

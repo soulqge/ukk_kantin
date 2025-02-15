@@ -35,46 +35,33 @@ class _LoginPageState extends State<LoginPage> {
     String username = usernameController.text.trim();
     String password = passwordController.text.trim();
 
-    // try {
-      var response;
-      if (selectedRole == 'siswa') {
-        response = await ApiService()
-            .loginSiswa(username: username, password: password);
-      } else {
-        response = await ApiService()
-            .loginStand(username: username, password: password);
-      }
+    var response;
+    if (selectedRole == 'siswa') {
+      response =
+          await ApiService().loginSiswa(username: username, password: password);
+    } else {
+      response =
+          await ApiService().loginStand(username: username, password: password);
+    }
+    print("Login Response okoko: $response");
 
-      // print("Response status: \${response?['status']}");
-      print("Login Response okoko: $response");
+    if (response['token'] != null) {
+      String token = response['token'];
+      String? role = response['role'];
+      await saveLoginData(token, role);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login Sukses')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Login gagal. Periksa kembali kredensial Anda.')),
+      );
+    }
 
-      if (response['token'] != null) {
-        String token = response['token'];
-        String? role = response['role'];
-        await saveLoginData(token, role);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Login SUkses.X')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Login gagal. Periksa kembali kredensial Anda.')),
-        );
-      }
-
-      setState(() {
-        isLoading = false;
-      });
-    // } catch (e) {
-    //   print("Login error: $e");
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text('Terjadi kesalahan. Silakan coba lagi.')),
-    //   );
-    // }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<void> saveLoginData(String token, String? role) async {
@@ -120,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Log In sebagai \${selectedRole.toUpperCase()}",
+                  "Log In",
                   style: GoogleFonts.outfit(
                     fontSize: 32,
                     fontWeight: FontWeight.w800,
@@ -142,7 +129,9 @@ class _LoginPageState extends State<LoginPage> {
                 CheckText(
                   hintText: "New User?",
                   hintButton: "Register Here",
-                  route: '/signup',
+                  route: selectedRole == "siswa"
+                      ? '/signup_siswa'
+                      : '/signup_admin',
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 isLoading
