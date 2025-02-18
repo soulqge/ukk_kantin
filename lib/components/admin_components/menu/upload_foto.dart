@@ -1,11 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:solar_icons/solar_icons.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+
 class UploadFoto extends StatefulWidget {
-  const UploadFoto({super.key});
+  final Function(File?) onImagePick; // Tambahkan parameter onImagePick
+
+  const UploadFoto({super.key, required this.onImagePick});
 
   @override
   State<UploadFoto> createState() => _UploadFotoState();
@@ -22,6 +24,8 @@ class _UploadFotoState extends State<UploadFoto> {
       setState(() {
         _selectedImage = File(image.path);
       });
+
+      widget.onImagePick(_selectedImage); // Kirim ke parent (AddMenu)
     }
   }
 
@@ -42,7 +46,7 @@ class _UploadFotoState extends State<UploadFoto> {
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(SolarIconsBold.upload, size: 40),
+                    Icon(Icons.upload, size: 40),
                     SizedBox(height: 8),
                     Text(
                       "Silahkan Upload Foto Makanan Disini",

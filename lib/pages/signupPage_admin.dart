@@ -4,7 +4,7 @@ import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/login_components/button_login.dart';
 import 'package:ukk_kantin/components/login_components/check.dart';
 import 'package:ukk_kantin/components/login_components/form_box_login.dart';
-import 'package:ukk_kantin/services/login_services.dart';
+import 'package:ukk_kantin/services/api_services.dart';
 
 class SignupPageAdmin extends StatefulWidget {
   const SignupPageAdmin({super.key});

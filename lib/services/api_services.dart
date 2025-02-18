@@ -111,7 +111,7 @@ class ApiService {
 
     var response =
         await http.post(Uri.parse(url), headers: headers, body: body);
-    print("Login Response ($roleType): \${response.body}");
+    print("Login Response ($roleType): ${response.body}");
 
     if (response.statusCode != 200) {
       return {'success': false, 'message': 'Server error'};
@@ -141,7 +141,8 @@ class ApiService {
         'success': true,
         'role': role,
         'username': username,
-        'token': token
+        'token': token,
+        'id': id
       };
     } else {
       return {
@@ -176,6 +177,91 @@ class ApiService {
     } catch (e) {
       print("Error saat request: $e");
       return null;
+    }
+  }
+
+  Future<List<dynamic>> getMenuMakanan() async {
+    try {
+      final token = await _getToken();
+      final response = await http.post(
+        Uri.parse('${baseUrl}getmenumakanan'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': makerID,
+        },
+      );
+
+      print("Response Menu Makanan: ${response.body}");
+
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        return responseData['data'] ?? [];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error getMenuMakanan: $e");
+      return [];
+    }
+  }
+
+  Future<List<dynamic>> getMenuMinuman() async {
+    try {
+      final token = await _getToken();
+      final response = await http.post(
+        Uri.parse('${baseUrl}getmenuminuman'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': makerID,
+        },
+      );
+
+      print("Response Menu Minuman: ${response.body}");
+
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        return responseData['data'] ?? [];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error getMenuMinuman: $e");
+      return [];
+    }
+  }
+
+  Future<bool> tambahMenu({
+    required String namaMakanan,
+    required String jenis,
+    required String harga,
+    required String deskripsi,
+    File? foto,
+  }) async {
+    try {
+      var request =
+          http.MultipartRequest('POST', Uri.parse('${baseUrl}tambahmenu'))
+            ..headers.addAll(await _getAuthHeaders())
+            ..fields.addAll({
+              'nama_makanan': namaMakanan,
+              'jenis': jenis, // Bisa 'makanan' atau 'minuman'
+              'harga': harga,
+              'deskripsi': deskripsi,
+            });
+
+      if (foto != null) {
+        request.files.add(await http.MultipartFile.fromPath('foto', foto.path));
+      }
+
+      var response = await request.send();
+      var responseBody = await response.stream.bytesToString();
+      print('Tambah Menu Response: $responseBody');
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Exception occurred: $e');
+      return false;
     }
   }
 

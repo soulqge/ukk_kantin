@@ -6,6 +6,10 @@ import 'package:ukk_kantin/components/admin_components/menu/checkbox_item.dart';
 import 'package:ukk_kantin/components/admin_components/menu/item_form.dart';
 import 'package:ukk_kantin/components/admin_components/menu/upload_foto.dart';
 
+import 'dart:io';
+
+import 'package:ukk_kantin/services/api_services.dart';
+
 class AddMenu extends StatefulWidget {
   const AddMenu({super.key});
 
@@ -14,13 +18,15 @@ class AddMenu extends StatefulWidget {
 }
 
 class _AddMenuState extends State<AddMenu> {
-  final _formKey = GlobalKey<FormState>(); // Key to track form state
-  String? selectedType; // "Makanan" or "Minuman"
-  bool isButtonEnabled = false; // To track if the button is active
+  final _formKey = GlobalKey<FormState>();
+  String? selectedType;
+  bool isButtonEnabled = false;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+
+  File? selectedImage; // Simpan foto yang diunggah
 
   // Check if all required fields are filled
   void checkFormCompletion() {
@@ -35,7 +41,6 @@ class _AddMenuState extends State<AddMenu> {
   @override
   void initState() {
     super.initState();
-    // Add listeners to text controllers to check form completion
     nameController.addListener(checkFormCompletion);
     priceController.addListener(checkFormCompletion);
     descriptionController.addListener(checkFormCompletion);
@@ -47,6 +52,38 @@ class _AddMenuState extends State<AddMenu> {
     priceController.dispose();
     descriptionController.dispose();
     super.dispose();
+  }
+
+  // **1. Upload Foto**
+  void onImageSelected(File image) {
+    setState(() {
+      selectedImage = image;
+      checkFormCompletion();
+    });
+  }
+
+  // **2. Fungsi untuk Menyimpan Menu ke API**
+  Future<void> submitForm() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    bool success = await ApiService().tambahMenu(
+      namaMakanan: nameController.text,
+      jenis: selectedType!,
+      harga: priceController.text,
+      deskripsi: descriptionController.text,
+      foto: selectedImage,
+    );
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Menu berhasil ditambahkan!')),
+      );
+      Navigator.pop(context); // Kembali ke halaman sebelumnya
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal menambahkan menu!')),
+      );
+    }
   }
 
   @override
@@ -114,7 +151,16 @@ class _AddMenuState extends State<AddMenu> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  UploadFoto(),
+                  UploadFoto(
+                    onImagePick: (File? image) {
+                      if (image != null) {
+                        setState(() {
+                          selectedImage = image;
+                          checkFormCompletion();
+                        });
+                      }
+                    },
+                  ),
                   SizedBox(height: 16),
                   ItemForm(
                     labelText: "Deskripsi",
@@ -125,8 +171,8 @@ class _AddMenuState extends State<AddMenu> {
                   SizedBox(height: 32),
                   ButtonSimpan(
                     hintText: "Simpan",
-                    route: '/tambah_menu',
-                    isEnabled: isButtonEnabled, // Pass the button state
+                    isEnabled: isButtonEnabled,
+                    onPressed: submitForm,
                   ),
                 ],
               ),
