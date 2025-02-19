@@ -1,16 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
-import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/admin_components/admin_hint.dart';
-import 'package:ukk_kantin/components/admin_components/hello_admin.dart';
+import 'package:ukk_kantin/components/admin_components/hello_admin_logout.dart';
 import 'package:ukk_kantin/components/admin_components/order_box.dart';
 import 'package:ukk_kantin/components/admin_components/pemasukan.dart';
 import 'package:ukk_kantin/components/navbar_admin.dart';
 import 'package:ukk_kantin/pages/admin/home/list_tran_admin.dart';
+import 'package:ukk_kantin/pages/admin/home/siswa_admin.dart';
 import 'package:ukk_kantin/pages/admin/menu_admin/menu_admin_content.dart';
-import 'package:ukk_kantin/pages/admin/menu_admin/menu_list_admin.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
 class HomeAdminPage extends StatefulWidget {
@@ -22,7 +20,6 @@ class HomeAdminPage extends StatefulWidget {
 
 class _HomeAdminPageState extends State<HomeAdminPage> {
   final PageController _pageController = PageController(initialPage: 0);
-
   int _currentPage = 0;
   String? userRole;
   String? userName;
@@ -37,9 +34,9 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
   Future<void> checkAuthentication() async {
     final prefs = await SharedPreferences.getInstance();
     final apiService = ApiService();
+    final stanList = await apiService.getStan();
 
-    final userData = await apiService.fetchUserData();
-    if (userData == null) {
+    if (stanList.isEmpty) {
       if (mounted) {
         Navigator.pushReplacementNamed(context, "/login");
       }
@@ -48,11 +45,13 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
 
     if (mounted) {
       setState(() {
-        userRole = userData['role'] ?? "Admin";
-        userName = userData['data']?['nama_pemilik'] ?? "Kantin";
+        userRole = "Admin";
+        userName = stanList[0]["nama_stan"] ?? "Kantin";
         makerId = prefs.getString("makerID");
 
+        // Simpan id_stan ke SharedPreferences
         prefs.setString("username", userName!);
+        prefs.setInt("id_stan", stanList[0]["id"]);
       });
     }
   }
@@ -78,9 +77,9 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
                 controller: _pageController,
                 onPageChanged: onPageChanged,
                 children: [
-                  HomeAdminContent(userName: userName ?? "Admin"),
-                  MenuAdminContent(),
-                  HomeAdminContent(userName: userName ?? "Admin"),
+                  const HomeAdminContent(),
+                  const MenuAdminContent(),
+                  SiswaAdminContent(),
                 ],
               ),
         bottomNavigationBar: BottomNavAdmin(
@@ -93,9 +92,7 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
 }
 
 class HomeAdminContent extends StatefulWidget {
-  final String userName;
-
-  const HomeAdminContent({super.key, required this.userName});
+  const HomeAdminContent({super.key});
 
   @override
   State<HomeAdminContent> createState() => _HomeAdminContentState();
@@ -112,93 +109,58 @@ class _HomeAdminContentState extends State<HomeAdminContent> {
 
   Future<void> loadAdminData() async {
     final prefs = await SharedPreferences.getInstance();
-    String? username = prefs.getString("username");
+    String username = prefs.getString("username") ?? "Kantin";
+    final apiService = ApiService();
+    final stanList = await apiService.getStan();
 
-    if (mounted) {
+    if (stanList.isNotEmpty) {
       setState(() {
-        kantinName = username ?? widget.userName;
+        kantinName = stanList[0]["nama_stan"] ?? username;
       });
+    } else {
+      setState(() {
+        kantinName = username;
+      });
+    }
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, "/login");
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final displayName =
+        "Hello ${kantinName[0].toUpperCase()}${kantinName.substring(1)}";
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HelloAdmin(
-                kantin:
-                    "Hello ${kantinName[0].toUpperCase()}${kantinName.substring(1)}",
+              HelloAdminLogout(
+                kantin: displayName,
                 icon: Icons.person,
                 iconColor: Colors.red,
-                route: '/home_admin',
+                onLogout: logout,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               OrderBox(running: 6, request: 9),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Pemasukan(penghasilan: 3600000),
-              SizedBox(height: 34),
-              AdminHint(hint: "Daftar Transaksi"),
-              SizedBox(height: 12),
-              ListTranAdmin()
+              const SizedBox(height: 34),
+              const AdminHint(hint: "Daftar Transaksi"),
+              const SizedBox(height: 12),
+              const ListTranAdmin(),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class MenuAdminContent extends StatefulWidget {
-  const MenuAdminContent({super.key});
-
-  @override
-  State<MenuAdminContent> createState() => _MenuAdminContentState();
-}
-
-class _MenuAdminContentState extends State<MenuAdminContent> {
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: HelloAdmin(
-                kantin: 'Daftar Makanan',
-                icon: SolarIconsBold.addCircle,
-                iconColor: Colors.red,
-                route: '/tambah_menu',
-              ),
-            ),
-            TabBar(
-              labelColor: Colors.red,
-              unselectedLabelColor: Colors.black54,
-              indicatorColor: Colors.red,
-              tabs: [
-                Tab(text: "Semua"),
-                Tab(text: "Makanan"),
-                Tab(text: "Minuman"),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  MenuListAdmin(),
-                  MenuListAdmin(category: "makanan"),
-                  MenuListAdmin(category: "minuman"),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );

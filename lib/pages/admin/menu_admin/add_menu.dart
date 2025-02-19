@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ukk_kantin/components/admin_components/hello_admin.dart';
+
 import 'package:ukk_kantin/components/admin_components/menu/button_simpan.dart';
 import 'package:ukk_kantin/components/admin_components/menu/checkbox_item.dart';
 import 'package:ukk_kantin/components/admin_components/menu/item_form.dart';
@@ -26,9 +27,9 @@ class _AddMenuState extends State<AddMenu> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
-  File? selectedImage; // Simpan foto yang diunggah
+  File? selectedImage;
 
-  // Check if all required fields are filled
+  
   void checkFormCompletion() {
     setState(() {
       isButtonEnabled = nameController.text.isNotEmpty &&
@@ -54,7 +55,6 @@ class _AddMenuState extends State<AddMenu> {
     super.dispose();
   }
 
-  // **1. Upload Foto**
   void onImageSelected(File image) {
     setState(() {
       selectedImage = image;
@@ -62,9 +62,11 @@ class _AddMenuState extends State<AddMenu> {
     });
   }
 
-  // **2. Fungsi untuk Menyimpan Menu ke API**
   Future<void> submitForm() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      print("Form tidak valid!");
+      return;
+    }
 
     bool success = await ApiService().tambahMenu(
       namaMakanan: nameController.text,
@@ -75,11 +77,13 @@ class _AddMenuState extends State<AddMenu> {
     );
 
     if (success) {
+      print("Menu berhasil ditambahkan!");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Menu berhasil ditambahkan!')),
       );
-      Navigator.pop(context); // Kembali ke halaman sebelumnya
+      Navigator.pop(context);
     } else {
+      print("Gagal menambahkan menu!");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Gagal menambahkan menu!')),
       );
@@ -123,20 +127,20 @@ class _AddMenuState extends State<AddMenu> {
                     children: [
                       CheckboxItem(
                         label: "Makanan",
-                        isSelected: selectedType == "Makanan",
+                        isSelected: selectedType == "makanan",
                         onChanged: (value) {
                           setState(() {
-                            selectedType = "Makanan";
+                            selectedType = "makanan";
                             checkFormCompletion();
                           });
                         },
                       ),
                       CheckboxItem(
                         label: "Minuman",
-                        isSelected: selectedType == "Minuman",
+                        isSelected: selectedType == "minuman",
                         onChanged: (value) {
                           setState(() {
-                            selectedType = "Minuman";
+                            selectedType = "minuman";
                             checkFormCompletion();
                           });
                         },

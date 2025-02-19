@@ -43,8 +43,8 @@ class _MenuAdminContentState extends State<MenuAdminContent> {
               child: TabBarView(
                 children: [
                   MenuListAdmin(),
-                  MenuListAdmin(category: "Makanan"),
-                  MenuListAdmin(category: "Minuman"),
+                  MenuListAdmin(category: "makanan"),
+                  MenuListAdmin(category: "minuman"),
                 ],
               ),
             ),

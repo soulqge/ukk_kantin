@@ -36,7 +36,6 @@ class _HomepageuserState extends State<Homepageuser> {
     print("DEBUG - MakerID tersimpan: ${prefs.getString("makerID")}");
   }
 
-  /// ✅ Mengecek autentikasi dan mengambil data user
   Future<void> checkAuthentication() async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString("auth_token");

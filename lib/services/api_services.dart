@@ -56,6 +56,40 @@ class ApiService {
     }
   }
 
+  Future<bool> updateSiswa({
+    required int idSiswa,
+    required String namaSiswa,
+    required String alamat,
+    required String telp,
+    required String username,
+    File? foto,
+  }) async {
+    try {
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('${baseUrl}ubah_siswa/$idSiswa'))
+        ..headers.addAll(await _getAuthHeaders())
+        ..fields.addAll({
+          'nama_siswa': namaSiswa,
+          'alamat': alamat,
+          'telp': telp,
+          'username': username,
+        });
+
+      if (foto != null) {
+        request.files.add(await http.MultipartFile.fromPath('foto', foto.path));
+      }
+
+      var response = await request.send();
+      var responseBody = await response.stream.bytesToString();
+      print('Update Siswa Response: $responseBody');
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Exception occurred: $e');
+      return false;
+    }
+  }
+
   Future<bool> registerStan({
     required String namaStan,
     required String namaPemilik,
@@ -97,7 +131,27 @@ class ApiService {
     required String username,
     required String password,
   }) async {
-    return _login('${baseUrl}login_stan', username, password, 'admin_stan');
+    var response =
+        await _login('${baseUrl}login_stan', username, password, 'admin_stan');
+
+    print("Response API: $response");
+
+    if (response['success']) {
+      var user = response['user'];
+
+      if (user != null && user['maker_id'] != null) {
+        String makerID = user['maker_id'].toString();
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('maker_id', makerID);
+
+        print("maker_id berhasil disimpan: $makerID");
+      } else {
+        print("Warning: maker_id tidak ditemukan dalam response!");
+      }
+    }
+
+    return response;
   }
 
   Future<Map<String, dynamic>> _login(
@@ -130,19 +184,23 @@ class ApiService {
       String username = responseData['user']['username'];
       String role = responseData['user']['role'];
       String id = responseData['user']['id'].toString();
+      String maker_id = responseData['user']['maker_id'].toString();
 
       await _saveToken(token);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('role', role);
       await prefs.setString('username', username);
+      await prefs.setString('id', id);
+      await prefs.setString('maker_id', maker_id);
 
       return {
         'success': true,
         'role': role,
         'username': username,
         'token': token,
-        'id': id
+        'id': id,
+        'maker_id': maker_id
       };
     } else {
       return {
@@ -177,6 +235,88 @@ class ApiService {
     } catch (e) {
       print("Error saat request: $e");
       return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getSiswa() async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        return [];
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("makerID") ?? '23';
+
+      final response = await http.post(
+        Uri.parse('${baseUrl}get_siswa'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          final data = jsonResponse["data"];
+
+          if (data is List) {
+            return List<Map<String, dynamic>>.from(data);
+          } else if (data is Map<String, dynamic>) {
+            return [data];
+          }
+        }
+      }
+
+      return [];
+    } catch (e) {
+      print("Error getSiswa: $e");
+      return [];
+    }
+  }
+
+  Future<List<dynamic>> getStan() async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        return [];
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("makerID") ?? '23';
+
+      final response = await http.get(
+        Uri.parse('${baseUrl}get_stan'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          final data = jsonResponse["data"];
+
+          if (data is List) {
+            return data;
+          } else if (data is Map<String, dynamic>) {
+            return [data];
+          }
+        }
+      }
+
+      return [];
+    } catch (e) {
+      print("Error getStan: $e");
+      return [];
     }
   }
 
@@ -240,14 +380,17 @@ class ApiService {
     File? foto,
   }) async {
     try {
+      String makerID = "23";
+
       var request =
           http.MultipartRequest('POST', Uri.parse('${baseUrl}tambahmenu'))
             ..headers.addAll(await _getAuthHeaders())
             ..fields.addAll({
               'nama_makanan': namaMakanan,
-              'jenis': jenis, // Bisa 'makanan' atau 'minuman'
+              'jenis': jenis,
               'harga': harga,
               'deskripsi': deskripsi,
+              'makerID': makerID,
             });
 
       if (foto != null) {
@@ -261,6 +404,27 @@ class ApiService {
       return response.statusCode == 200;
     } catch (e) {
       print('Exception occurred: $e');
+      return false;
+    }
+  }
+
+  Future<bool> hapusMenu({required String menuId}) async {
+    try {
+      var response = await http.delete(
+        Uri.parse('${baseUrl}hapus_menu/$menuId'),
+        headers: await _getAuthHeaders(),
+        body: jsonEncode({'id_menu': menuId}),
+      );
+
+      print("Response Hapus Menu: ${response.body}");
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("Error hapusMenu: $e");
       return false;
     }
   }

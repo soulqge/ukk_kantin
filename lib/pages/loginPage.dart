@@ -43,12 +43,14 @@ class _LoginPageState extends State<LoginPage> {
       response =
           await ApiService().loginStand(username: username, password: password);
     }
-    print("Login Response okoko: $response");
+    print("Login Response: $response");
 
     if (response['token'] != null) {
       String token = response['token'];
       String? role = response['role'];
-      await saveLoginData(token, role);
+      String? idStan = response['id_stan'];
+      
+      await saveLoginData(token, role, idStan);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Login Sukses')),
       );
@@ -64,7 +66,8 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Future<void> saveLoginData(String token, String? role) async {
+  Future<void> saveLoginData(
+      String token, String? role, String? makerId) async {
     if (role == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: Role is null!')),
@@ -75,6 +78,13 @@ class _LoginPageState extends State<LoginPage> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
     await prefs.setString('user_role', role);
+
+    if (role == 'admin_stan' && makerId != null) {
+      await prefs.setString('maker_id', makerId);
+      print("maker_id berhasil disimpan: $makerId"); 
+    } else if (role == 'admin_stan') {
+      print("Peringatan: maker_id tidak ditemukan dalam response!");
+    }
 
     setState(() {
       isLoading = false;

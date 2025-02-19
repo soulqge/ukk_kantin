@@ -7,12 +7,13 @@ class HelloAdmin extends StatelessWidget {
   final Color iconColor;
   final String route;
 
-  const HelloAdmin(
-      {super.key,
-      required this.kantin,
-      required this.icon,
-      required this.iconColor,
-      required this.route});
+  const HelloAdmin({
+    super.key,
+    required this.kantin,
+    required this.icon,
+    required this.iconColor,
+    required this.route,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,19 +22,17 @@ class HelloAdmin extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            "$kantin",
+            kantin,
             style:
                 GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w800),
           ),
-          Expanded(child: Container()),
+          Spacer(),
           IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, route);
-              },
-              icon: Icon(
-                icon,
-                color: iconColor,
-              ))
+            onPressed: () {
+              Navigator.pushNamed(context, route);
+            },
+            icon: Icon(icon, color: iconColor),
+          ),
         ],
       ),
     );

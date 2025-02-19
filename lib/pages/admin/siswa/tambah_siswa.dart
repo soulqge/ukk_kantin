@@ -1,0 +1,165 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:solar_icons/solar_icons.dart';
+import 'package:ukk_kantin/components/login_components/button_login.dart';
+import 'package:ukk_kantin/components/login_components/form_box_login.dart';
+import 'package:ukk_kantin/services/api_services.dart';
+
+class TambahSiswaAdmin extends StatefulWidget {
+  const TambahSiswaAdmin({super.key});
+
+  @override
+  State<TambahSiswaAdmin> createState() => _TambahSiswaAdminState();
+}
+
+class _TambahSiswaAdminState extends State<TambahSiswaAdmin> {
+  final TextEditingController namaLengkapController = TextEditingController();
+  final TextEditingController alamatController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController noTelpController = TextEditingController();
+  File? _image;
+  bool isLoading = false;
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> registerUser() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    String namaLengkap = namaLengkapController.text.trim();
+    String alamat = alamatController.text.trim();
+    String password = passwordController.text.trim();
+    String telp = noTelpController.text.trim();
+    String username = usernameController.text.trim();
+
+    print("=== DEBUGGER ===");
+    print("Nama Lengkap: $namaLengkap");
+    print("Alamat: $alamat");
+    print("Username: $username");
+    print("No Telp: $telp");
+    print("Password: $password");
+    print("Foto Profil: ${_image?.path ?? 'Tidak Ada'}");
+
+    if (namaLengkap.isEmpty ||
+        alamat.isEmpty ||
+        password.isEmpty ||
+        username.isEmpty ||
+        telp.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Harap isi semua field!')),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      var response = await ApiService().registerStudent(
+        namaSiswa: namaLengkap,
+        alamat: alamat,
+        telp: telp,
+        username: username,
+        password: password,
+        foto: _image,
+      );
+
+      print("Response dari API: $response");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Tambah Siswa Berhasil')),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      print("Error saat register: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Terjadi kesalahan saat registrasi.')),
+      );
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Tambah Siswa",
+                    style: GoogleFonts.outfit(
+                        fontSize: 32, fontWeight: FontWeight.w800)),
+                SizedBox(height: 50),
+                Center(
+                  child: GestureDetector(
+                    onTap: _pickImage,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.grey[300],
+                      backgroundImage:
+                          _image != null ? FileImage(_image!) : null,
+                      child: _image == null
+                          ? Icon(Icons.camera_alt,
+                              size: 40, color: Colors.white)
+                          : null,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 32),
+                FormBoxLogin(
+                    controller: namaLengkapController,
+                    icon: SolarIconsOutline.user,
+                    hintText: "Nama Siswa"),
+                SizedBox(height: 32),
+                FormBoxLogin(
+                    controller: alamatController,
+                    icon: SolarIconsOutline.map,
+                    hintText: "Alamat"),
+                SizedBox(height: 32),
+                FormBoxLogin(
+                    controller: noTelpController,
+                    icon: SolarIconsOutline.phone,
+                    hintText: "No Telp"),
+                SizedBox(height: 32),
+                FormBoxLogin(
+                    controller: usernameController,
+                    icon: SolarIconsOutline.user,
+                    hintText: "Username"),
+                SizedBox(height: 32),
+                FormBoxLogin(
+                    controller: passwordController,
+                    icon: SolarIconsOutline.lockPassword,
+                    hintText: "Password"),
+                SizedBox(height: 50),
+                SizedBox(height: MediaQuery.sizeOf(context).height * 0.06),
+                isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : ButtonLogin(hintText: "Tambah Siswa", onPressed: registerUser),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
