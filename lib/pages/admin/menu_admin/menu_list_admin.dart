@@ -30,10 +30,9 @@ class _MenuListAdminState extends State<MenuListAdmin> {
 
   Future<void> fetchMenus() async {
     final apiService = ApiService();
-    List<dynamic> response =
-        await apiService.showMenu(); // Ubah tipe menjadi List
+    List<dynamic> response = await apiService.showMenu();
 
-    print("Fetched Menus: ${jsonEncode(response)}"); // Debugging
+    print("Fetched Menus: ${jsonEncode(response)}");
 
     List<Map<String, dynamic>> filteredResponse =
         response.map((data) => data as Map<String, dynamic>).toList();
@@ -73,10 +72,6 @@ class _MenuListAdminState extends State<MenuListAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    if (idStan == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     List<Map<String, dynamic>> filteredItems = widget.category == null
         ? items
         : items.where((data) => data["jenis"] == widget.category).toList();

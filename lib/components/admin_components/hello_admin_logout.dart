@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:solar_icons/solar_icons.dart';
 
 class HelloAdminLogout extends StatelessWidget {
   final String kantin;
   final IconData icon;
   final Color iconColor;
-  final VoidCallback? onLogout; // Tambahkan parameter logout opsional
+  final VoidCallback? onLogout;
+  final VoidCallback? onEdit;
 
-  const HelloAdminLogout({
-    super.key,
-    required this.kantin,
-    required this.icon,
-    required this.iconColor,
-    this.onLogout, // Tambahkan parameter
-  });
+  const HelloAdminLogout(
+      {super.key,
+      required this.kantin,
+      required this.icon,
+      required this.iconColor,
+      this.onLogout,
+      this.onEdit});
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,14 @@ class HelloAdminLogout extends StatelessWidget {
                 GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w800),
           ),
           Spacer(),
+          IconButton(
+            onPressed: () {
+              if (onEdit != null) {
+                onEdit!();
+              }
+            },
+            icon: Icon(icon, color: iconColor),
+          ),
           IconButton(
             onPressed: () {
               if (onLogout != null) {
@@ -49,7 +59,7 @@ class HelloAdminLogout extends StatelessWidget {
                 );
               }
             },
-            icon: Icon(Icons.logout, color: Colors.red),
+            icon: Icon(SolarIconsOutline.logout_2, color: Colors.red),
           ),
         ],
       ),

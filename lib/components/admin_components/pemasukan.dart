@@ -19,7 +19,7 @@ class _PemasukanState extends State<Pemasukan> {
   Widget build(BuildContext context) {
     final formatCurrency = NumberFormat.currency(
       locale: 'id_ID',
-      symbol: 'Rp',
+      symbol: 'Rp.',
       decimalDigits: 0,
     );
 

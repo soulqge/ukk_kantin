@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ukk_kantin/components/user_components/home_page_components/hello_user.dart';
 import 'package:ukk_kantin/components/user_components/home_page_components/home_hint.dart';
 import 'package:ukk_kantin/components/user_components/home_page_components/search_bar_user.dart';
 

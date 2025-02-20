@@ -8,6 +8,7 @@ class ApiService {
   final String baseUrl = 'https://ukk-p2.smktelkom-mlg.sch.id/api/';
   final String makerID = '23';
 
+  //token
   Future<String?> _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('access_token');
@@ -20,7 +21,9 @@ class ApiService {
     await prefs.setString('access_token', token);
     print("Token disimpan: $token");
   }
+  //token
 
+  //siswa
   Future<bool> registerStudent({
     required String namaSiswa,
     required String alamat,
@@ -64,7 +67,6 @@ class ApiService {
     required String username,
     File? foto,
   }) async {
-    // try {
     var uri = Uri.parse("$baseUrl/ubah_siswa/$id");
 
     var request = http.MultipartRequest("POST", uri);
@@ -83,7 +85,6 @@ class ApiService {
     request.fields['username'] = username;
     request.fields['maker_id'] = "23";
 
-    // Tambahkan file gambar jika ada
     if (foto != null) {
       request.files.add(await http.MultipartFile.fromPath('foto', foto.path));
     }
@@ -99,10 +100,6 @@ class ApiService {
       print("Update gagal: ${jsonResponse['message']}");
       return false;
     }
-    // } catch (e) {
-    //   print("Error update siswa: $e");
-    //   return false;
-    // }
   }
 
   Future<bool> hapusSiswa({required String siswaId}) async {
@@ -122,36 +119,6 @@ class ApiService {
       }
     } catch (e) {
       print("Error hapusUser: $e");
-      return false;
-    }
-  }
-
-  Future<bool> registerStan({
-    required String namaStan,
-    required String namaPemilik,
-    required String telp,
-    required String username,
-    required String password,
-  }) async {
-    try {
-      var request =
-          http.MultipartRequest('POST', Uri.parse('${baseUrl}register_stan'))
-            ..headers.addAll(await _getAuthHeaders())
-            ..fields.addAll({
-              'nama_stan': namaStan,
-              'nama_pemilik': namaPemilik,
-              'telp': telp,
-              'username': username,
-              'password': password,
-            });
-
-      var response = await request.send();
-      var responseBody = await response.stream.bytesToString();
-      print('Register Stand Response: $responseBody');
-
-      return response.statusCode == 200;
-    } catch (e) {
-      print('Exception occurred: $e');
       return false;
     }
   }
@@ -287,47 +254,6 @@ class ApiService {
     }
   }
 
-  Future<List<dynamic>> getStan() async {
-    try {
-      final token = await _getToken();
-      if (token == null) {
-        return [];
-      }
-
-      final prefs = await SharedPreferences.getInstance();
-      final storedMakerId = prefs.getString("makerID") ?? '23';
-
-      final response = await http.get(
-        Uri.parse('${baseUrl}get_stan'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-          'makerID': storedMakerId,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-
-        if (jsonResponse is Map<String, dynamic> &&
-            jsonResponse.containsKey("data")) {
-          final data = jsonResponse["data"];
-
-          if (data is List) {
-            return data;
-          } else if (data is Map<String, dynamic>) {
-            return [data];
-          }
-        }
-      }
-
-      return [];
-    } catch (e) {
-      print("Error getStan: $e");
-      return [];
-    }
-  }
-
   Future<List<dynamic>> getMenuMakanan() async {
     try {
       final token = await _getToken();
@@ -376,6 +302,119 @@ class ApiService {
       }
     } catch (e) {
       print("Error getMenuMinuman: $e");
+      return [];
+    }
+  }
+  //siswa
+
+  //stan
+
+  Future<bool> registerStan({
+    required String namaStan,
+    required String namaPemilik,
+    required String telp,
+    required String username,
+    required String password,
+  }) async {
+    try {
+      var request =
+          http.MultipartRequest('POST', Uri.parse('${baseUrl}register_stan'))
+            ..headers.addAll(await _getAuthHeaders())
+            ..fields.addAll({
+              'nama_stan': namaStan,
+              'nama_pemilik': namaPemilik,
+              'telp': telp,
+              'username': username,
+              'password': password,
+            });
+
+      var response = await request.send();
+      var responseBody = await response.stream.bytesToString();
+      print('Register Stand Response: $responseBody');
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Exception occurred: $e');
+      return false;
+    }
+  }
+
+  Future<bool> updateStan({
+    required int id,
+    required String namaStan,
+    required String namaPemilik,
+    required String telp,
+    required String username,
+  }) async {
+    var uri = Uri.parse("$baseUrl/update_stan/$id");
+
+    var request = http.MultipartRequest("POST", uri);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+    request.headers.addAll({
+      "Authorization": "Bearer $token",
+      'Content-Type': 'application/json',
+      'makerID': makerID,
+    });
+
+    request.fields['nama_stan'] = namaStan;
+    request.fields['nama_pemilik'] = namaPemilik;
+    request.fields['telp'] = telp;
+    request.fields['username'] = username;
+    request.fields['maker_id'] = "23";
+
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+    var jsonResponse = jsonDecode(responseBody);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == true) {
+      print("Update sukses: ${jsonResponse['message']}");
+      return true;
+    } else {
+      print("Update gagal: ${jsonResponse['message']}");
+      return false;
+    }
+    
+  }
+
+  Future<List<dynamic>> getStan() async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        return [];
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("makerID") ?? '23';
+
+      final response = await http.get(
+        Uri.parse('${baseUrl}get_stan'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          final data = jsonResponse["data"];
+
+          if (data is List) {
+            return data;
+          } else if (data is Map<String, dynamic>) {
+            return [data];
+          }
+        }
+      }
+
+      return [];
+    } catch (e) {
+      print("Error getStan: $e");
       return [];
     }
   }
@@ -462,6 +501,51 @@ class ApiService {
       return false;
     }
   }
+
+  Future<List<dynamic>> getPemasukan(String tanggal) async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        print("Token tidak ditemukan, harap login kembali.");
+        return [];
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("maker_id") ?? makerID;
+
+      final response = await http.post(
+        Uri.parse('${baseUrl}showpemasukanbybulan/$tanggal'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+      );
+
+      print("Response getPemasukan: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          final data = jsonResponse["data"];
+
+          if (data is List) {
+            return data;
+          } else if (data is Map<String, dynamic>) {
+            return [data];
+          }
+        }
+      }
+
+      return [];
+    } catch (e) {
+      print("Error getPemasukan: $e");
+      return [];
+    }
+  }
+  //stan
 
   Future<Map<String, String>> _getAuthHeaders() async {
     String? token = await _getToken();

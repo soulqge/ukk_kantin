@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ukk_kantin/pages/admin/home/home_admin.dart';
 import 'package:ukk_kantin/pages/admin/menu_admin/add_menu.dart';
-import 'package:ukk_kantin/pages/admin/siswa/edit_siswa.dart';
 import 'package:ukk_kantin/pages/admin/siswa/tambah_siswa.dart';
 import 'package:ukk_kantin/pages/choicePage.dart';
 import 'package:ukk_kantin/pages/loginPage.dart';
