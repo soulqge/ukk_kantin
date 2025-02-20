@@ -29,7 +29,6 @@ class _AddMenuState extends State<AddMenu> {
 
   File? selectedImage;
 
-  
   void checkFormCompletion() {
     setState(() {
       isButtonEnabled = nameController.text.isNotEmpty &&
@@ -82,6 +81,7 @@ class _AddMenuState extends State<AddMenu> {
         SnackBar(content: Text('Menu berhasil ditambahkan!')),
       );
       Navigator.pop(context);
+      setState(() {}); // Memaksa rebuild halaman setelah kembali
     } else {
       print("Gagal menambahkan menu!");
       ScaffoldMessenger.of(context).showSnackBar(

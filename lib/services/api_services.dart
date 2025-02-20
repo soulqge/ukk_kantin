@@ -57,35 +57,71 @@ class ApiService {
   }
 
   Future<bool> updateSiswa({
-    required int idSiswa,
+    required int id,
     required String namaSiswa,
     required String alamat,
     required String telp,
     required String username,
     File? foto,
   }) async {
+    // try {
+    var uri = Uri.parse("$baseUrl/ubah_siswa/$id");
+
+    var request = http.MultipartRequest("POST", uri);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("access_token");
+    request.headers.addAll({
+      "Authorization": "Bearer $token",
+      'Content-Type': 'application/json',
+      'makerID': makerID,
+    });
+
+    request.fields['nama_siswa'] = namaSiswa;
+    request.fields['alamat'] = alamat;
+    request.fields['telp'] = telp;
+    request.fields['username'] = username;
+    request.fields['maker_id'] = "23";
+
+    // Tambahkan file gambar jika ada
+    if (foto != null) {
+      request.files.add(await http.MultipartFile.fromPath('foto', foto.path));
+    }
+
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+    var jsonResponse = jsonDecode(responseBody);
+
+    if (response.statusCode == 200 && jsonResponse['status'] == true) {
+      print("Update sukses: ${jsonResponse['message']}");
+      return true;
+    } else {
+      print("Update gagal: ${jsonResponse['message']}");
+      return false;
+    }
+    // } catch (e) {
+    //   print("Error update siswa: $e");
+    //   return false;
+    // }
+  }
+
+  Future<bool> hapusSiswa({required String siswaId}) async {
     try {
-      var request = http.MultipartRequest(
-          'POST', Uri.parse('${baseUrl}ubah_siswa/$idSiswa'))
-        ..headers.addAll(await _getAuthHeaders())
-        ..fields.addAll({
-          'nama_siswa': namaSiswa,
-          'alamat': alamat,
-          'telp': telp,
-          'username': username,
-        });
+      var response = await http.delete(
+        Uri.parse('${baseUrl}hapus_siswa/$siswaId'),
+        headers: await _getAuthHeaders(),
+        body: jsonEncode({'id_user': siswaId}),
+      );
 
-      if (foto != null) {
-        request.files.add(await http.MultipartFile.fromPath('foto', foto.path));
+      print("Response Hapus User: ${response.body}");
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
       }
-
-      var response = await request.send();
-      var responseBody = await response.stream.bytesToString();
-      print('Update Siswa Response: $responseBody');
-
-      return response.statusCode == 200;
     } catch (e) {
-      print('Exception occurred: $e');
+      print("Error hapusUser: $e");
       return false;
     }
   }
@@ -210,34 +246,6 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>?> fetchUserData() async {
-    try {
-      final token = await _getToken();
-      final prefs = await SharedPreferences.getInstance();
-      final storedMakerId = prefs.getString("makerID") ?? '23';
-
-      if (token == null) return null;
-
-      final response = await http.get(
-        Uri.parse('${baseUrl}get_stan'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-          'makerID': storedMakerId,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        return null;
-      }
-    } catch (e) {
-      print("Error saat request: $e");
-      return null;
-    }
-  }
-
   Future<List<Map<String, dynamic>>> getSiswa() async {
     try {
       final token = await _getToken();
@@ -324,7 +332,7 @@ class ApiService {
     try {
       final token = await _getToken();
       final response = await http.post(
-        Uri.parse('${baseUrl}getmenumakanan'),
+        Uri.parse('${baseUrl}getmenufood'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -350,7 +358,7 @@ class ApiService {
     try {
       final token = await _getToken();
       final response = await http.post(
-        Uri.parse('${baseUrl}getmenuminuman'),
+        Uri.parse('${baseUrl}getmenudrink'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -368,6 +376,32 @@ class ApiService {
       }
     } catch (e) {
       print("Error getMenuMinuman: $e");
+      return [];
+    }
+  }
+
+  Future<List<dynamic>> showMenu() async {
+    try {
+      final token = await _getToken();
+      final response = await http.post(
+        Uri.parse('${baseUrl}showmenu'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': makerID,
+        },
+      );
+
+      print("Response Show Menu: ${response.body}");
+
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        return responseData['data'] ?? [];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error Show Menu: $e");
       return [];
     }
   }
@@ -413,7 +447,7 @@ class ApiService {
       var response = await http.delete(
         Uri.parse('${baseUrl}hapus_menu/$menuId'),
         headers: await _getAuthHeaders(),
-        body: jsonEncode({'id_menu': menuId}),
+        body: jsonEncode({'id': menuId}),
       );
 
       print("Response Hapus Menu: ${response.body}");

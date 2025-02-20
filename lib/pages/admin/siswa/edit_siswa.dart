@@ -61,12 +61,12 @@ class _FormEditSiswaState extends State<FormEditSiswa> {
 
     try {
       await ApiService().updateSiswa(
-        idSiswa: widget.siswaData['id_user'],
+        id: widget.siswaData['id'],
         namaSiswa: namaLengkapController.text.trim(),
         alamat: alamatController.text.trim(),
         telp: noTelpController.text.trim(),
         username: usernameController.text.trim(),
-        foto: _image, // Tetap bisa null jika tidak ada gambar yang dipilih
+        foto: _image,
       );
 
       print("Siswa berhasil diperbarui!");
@@ -112,7 +112,8 @@ class _FormEditSiswaState extends State<FormEditSiswa> {
                       backgroundImage: _image != null
                           ? FileImage(_image!)
                           : (widget.siswaData['foto'] != null
-                              ? NetworkImage("$baseUrlRil${["foto"]}")
+                              ? NetworkImage(
+                                      "$baseUrlRil${widget.siswaData["foto"]}")
                                   as ImageProvider
                               : null),
                       child: _image == null && widget.siswaData['foto'] == null

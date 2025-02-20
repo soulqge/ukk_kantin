@@ -26,19 +26,23 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
     });
   }
 
-  // void _deleteSiswa(int id) async {
-  //   bool success = await ApiService().deleteSiswa(id);
-  //   if (success) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text("Siswa berhasil dihapus")),
-  //     );
-  //     _fetchSiswa(); // Refresh daftar siswa
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(content: Text("Gagal menghapus siswa")),
-  //     );
-  //   }
-  // }
+  Future<void> _deleteSiswa(String siswaId) async {
+    final apiService = ApiService();
+    bool success = await apiService.hapusSiswa(siswaId: siswaId);
+
+    if (success) {
+      setState(() {
+        _siswaList = ApiService().getSiswa();
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Siswa berhasil dihapus")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Gagal menghapus siswa")),
+      );
+    }
+  }
 
   void _editSiswa(Map<String, dynamic> siswa) async {
     final result = await Navigator.push(
@@ -49,7 +53,7 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
     );
 
     if (result == true) {
-      _fetchSiswa(); // Memperbarui daftar siswa setelah pengeditan selesai
+      _fetchSiswa();
     }
   }
 
@@ -57,7 +61,7 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        _fetchSiswa(); // Refresh data saat pengguna kembali
+        _fetchSiswa();
         return true;
       },
       child: Scaffold(
@@ -106,12 +110,28 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
                               label: 'Edit',
                             ),
                             SlidableAction(
-                              onPressed: (context) {
-                                // Navigator.pushNamed(
-                                //   context,
-                                //   "/edit_menu",
-                                //   arguments: item,
-                                // );
+                              onPressed: (_) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("Hapus Siswa"),
+                                    content: const Text(
+                                        "Apakah Anda yakin ingin menghapus siswa ini?"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text("Batal"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          _deleteSiswa(siswa["id"].toString());
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Hapus"),
+                                      ),
+                                    ],
+                                  ),
+                                );
                               },
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white,
