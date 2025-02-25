@@ -25,6 +25,7 @@ class _HomeAdminContentState extends State<HomeAdminContent> {
   void initState() {
     super.initState();
     loadAdminData();
+    fetchPemasukan();
   }
 
   Future<void> loadAdminData() async {
@@ -36,7 +37,7 @@ class _HomeAdminContentState extends State<HomeAdminContent> {
         List<Map<String, dynamic>>.from(await apiService.getStan());
 
     setState(() {
-      _stanList = stanList; 
+      _stanList = stanList;
       kantinName = stanList.isNotEmpty
           ? stanList[0]["nama_pemilik"] ?? username
           : username;

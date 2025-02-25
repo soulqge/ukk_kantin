@@ -213,6 +213,47 @@ class ApiService {
     }
   }
 
+  Future<List<dynamic>> getProfile() async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        return [];
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("makerID") ?? '23';
+
+      final response = await http.get(
+        Uri.parse('${baseUrl}get_profile'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          final data = jsonResponse["data"];
+
+          if (data is List) {
+            return data;
+          } else if (data is Map<String, dynamic>) {
+            return [data];
+          }
+        }
+      }
+
+      return [];
+    } catch (e) {
+      print("Error getProfile: $e");
+      return [];
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getSiswa() async {
     try {
       final token = await _getToken();
@@ -375,7 +416,6 @@ class ApiService {
       print("Update gagal: ${jsonResponse['message']}");
       return false;
     }
-    
   }
 
   Future<List<dynamic>> getStan() async {
@@ -513,7 +553,7 @@ class ApiService {
       final prefs = await SharedPreferences.getInstance();
       final storedMakerId = prefs.getString("maker_id") ?? makerID;
 
-      final response = await http.post(
+      final response = await http.get(
         Uri.parse('${baseUrl}showpemasukanbybulan/$tanggal'),
         headers: {
           'Authorization': 'Bearer $token',
@@ -545,6 +585,84 @@ class ApiService {
       return [];
     }
   }
+
+  Future<List<Map<String, dynamic>>> getOrderAdmin(String status) async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        print("Token tidak ditemukan, harap login kembali.");
+        return [];
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("maker_id") ?? makerID;
+
+      final response = await http.get(
+        Uri.parse('${baseUrl}getorder/$status'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+      );
+
+      print("Response getOrder: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          final data = jsonResponse["data"];
+
+          if (data is List) {
+            return data.cast<Map<String, dynamic>>();
+          } else if (data is Map<String, dynamic>) {
+            return [data];
+          }
+        }
+      }
+      return [];
+    } catch (e) {
+      print("Error getOrder: $e");
+      return [];
+    }
+  }
+
+  Future<bool> updateOrderStatus(String idPesanan, String status) async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        print("Token tidak ditemukan, harap login kembali.");
+        return false;
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("maker_id") ?? makerID;
+
+      final response = await http.put(
+        Uri.parse('${baseUrl}updatestatus/$idPesanan'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+        body: jsonEncode({"status": status}),
+      );
+
+      print("Response updateOrder: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return jsonResponse["status"] == true;
+      }
+      return false;
+    } catch (e) {
+      print("Error updateOrderStatus: $e");
+      return false;
+    }
+  }
+
   //stan
 
   Future<Map<String, String>> _getAuthHeaders() async {

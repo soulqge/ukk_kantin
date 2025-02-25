@@ -1,189 +1,142 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:solar_icons/solar_icons.dart';
-import 'package:ukk_kantin/components/user_components/menu_components/menu_button.dart';
-import 'package:ukk_kantin/pages/user/home/menuPage.dart';
+import 'package:intl/intl.dart';
+import 'package:ukk_kantin/services/api_services.dart';
 
 class Stan extends StatefulWidget {
-  const Stan({super.key});
+  final String? category;
+
+  const Stan({super.key, this.category});
 
   @override
   State<Stan> createState() => _StanState();
 }
 
 class _StanState extends State<Stan> {
+  List<Map<String, dynamic>> items = [];
+  bool isLoading = true;
+  final Random _random = Random();
+  final String baseUrlRil = "https://ukk-p2.smktelkom-mlg.sch.id/";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchMenus();
+  }
+
+  Future<void> fetchMenus() async {
+    final apiService = ApiService();
+    List<dynamic> makanan = await apiService.getMenuMakanan();
+    List<dynamic> minuman = await apiService.getMenuMinuman();
+    List<Map<String, dynamic>> response = [...makanan, ...minuman];
+
+    if (mounted) {
+      setState(() {
+        items = response;
+        isLoading = false;
+      });
+    }
+  }
+
+  String formatCurrency(int amount) {
+    final currencyFormatter =
+        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+    return currencyFormatter.format(amount);
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> stans = [
-      {
-        'name': 'Pak Yoyok',
-        'image': 'assets/placeholder.png',
-        'makanan': [
-          {
-            'name': 'Nasi Goreng',
-            'description': 'Nasi Goreng Enak',
-            'harga': 10000,
-            'imageItem': 'assets/place2.jpeg'
-          },
-          {
-            'name': 'Sate Ayam',
-            'description': 'Sate Ayam Enak',
-            'harga': 12000,
-            'imageItem': 'assets/place2.jpeg'
-          },
-        ],
-        'minuman': [
-          {'name': 'Es Teh', 'description': 'Es Teh Enak', 'harga': 12000},
-          {
-            'name': 'Air Mineral',
-            'description': 'Air Mineral Segar',
-            'harga': 12000,
-            'imageItem': 'assets/place2.jpeg'
-          },
-        ],
-      },
-      {
-        'name': 'Pak Aril',
-        'image': 'assets/placeholder.png',
-        'makanan': [
-          {
-            'name': 'Mie Goreng',
-            'description': 'Mie Goreng Enak',
-            'harga': 12000,
-            'imageItem': 'assets/place2.jpeg'
-          },
-          {
-            'name': 'Nasi Uduk',
-            'description': 'Nasi Uduk Lezat',
-            'harga': 12000,
-            'imageItem': 'assets/place2.jpeg'
-          },
-        ],
-        'minuman': [
-          {
-            'name': 'Es Jeruk',
-            'description': 'Es Jeruk Segar',
-            'harga': 12000,
-            'imageItem': 'assets/place2.jpeg'
-          },
-          {
-            'name': 'Kopi Hitam',
-            'description': 'Kopi Hitam Mantap',
-            'harga': 12000,
-            'imageItem': 'assets/place2.jpeg'
-          },
-        ],
-      },
-      {
-        'name': 'Bu Cihuy',
-        'image': 'assets/placeholder.png',
-        'makanan': [
-          {
-            'name': 'Mie Ayam',
-            'description': 'Mie Ayam Enak',
-            'harga': 12000,
-            'imageItem': 'assets/place2.jpeg'
-          },
-          {
-            'name': 'Nasi Katsu',
-            'description': 'Nasi Katsu Lezat',
-            'harga': 12000
-          },
-        ],
-        'minuman': [
-          {
-            'name': 'Es Milo',
-            'description': 'Es Jeruk Segar',
-            'harga': 12000,
-            'imageItem': 'assets/place2.jpeg'
-          },
-          {
-            'name': 'Kopi',
-            'description': 'Kopi Mantap',
-            'harga': 12000,
-            'imageItem': 'assets/place2.jpeg'
-          },
-        ],
-      },
-    ];
+    List<Map<String, dynamic>> filteredItems = widget.category == null
+        ? items
+        : items.where((item) => item["jenis"] == widget.category).toList();
 
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: stans.length,
-      itemBuilder: (context, index) {
-        final stan = stans[index];
-        return Container(
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(255, 243, 240, 1),
-            borderRadius: BorderRadius.all(Radius.circular(16)),
-          ),
-          margin: EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  bottomLeft: Radius.circular(16),
-                ),
-                child: Image.asset(
-                  stan['image']!,
-                  width: 146,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              stan['name']!,
-                              style: GoogleFonts.nunitoSans(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: -0.06,
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : ListView.builder(
+            itemCount: filteredItems.length,
+            itemBuilder: (context, index) {
+              var item = filteredItems[index];
+              int rating = _random.nextInt(5) + 1;
+
+              return Container(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: SizedBox(
+                        width: 102,
+                        height: 102,
+                        child: item["foto"] == null || item["foto"].isEmpty
+                            ? Image.asset("assets/noImage.png",
+                                width: 100, height: 100, fit: BoxFit.cover)
+                            : Image.network(
+                                "$baseUrlRil${item["foto"]}",
+                                fit: BoxFit.cover,
+                                width: 102,
+                                height: 102,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Image.asset("assets/placeholder.png",
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover),
                               ),
-                            ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  item["nama_makanan"],
+                                  style: GoogleFonts.nunitoSans(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
-                          IconButton(
-                            onPressed: () {
-                              // To be implemented
-                            },
-                            icon: Icon(
-                              SolarIconsBold.bookmark,
-                              color: Color.fromRGBO(240, 94, 94, 1),
-                            ),
+                          Row(
+                            children: [
+                              Text("#${item["jenis"]}",
+                                  style: GoogleFonts.nunitoSans(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: const Color.fromRGBO(
+                                          240, 94, 94, 1))),
+                              const Spacer(),
+                              Text(formatCurrency(item["harga"]),
+                                  style: GoogleFonts.sen(
+                                      fontSize: 17.89,
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                          const SizedBox(height: 18),
+                          Row(
+                            children: [
+                              for (int i = 0; i < rating; i++)
+                                const Icon(Icons.star,
+                                    color: Colors.amber, size: 16),
+                              for (int i = rating; i < 5; i++)
+                                const Icon(Icons.star_border,
+                                    color: Colors.grey, size: 16),
+                              const Spacer(),
+                            ],
                           ),
                         ],
                       ),
-                      SizedBox(height: 24),
-                      MenuButton(
-                        label: "Lihat Menu",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Menupage(
-                                stans: stan,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+              );
+            },
+          );
   }
 }

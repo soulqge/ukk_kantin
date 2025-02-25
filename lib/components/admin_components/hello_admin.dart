@@ -3,16 +3,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 class HelloAdmin extends StatelessWidget {
   final String kantin;
-  final IconData icon;
+  final IconData? icon;
   final Color iconColor;
-  final String route;
+  final String? route;
 
   const HelloAdmin({
     super.key,
     required this.kantin,
-    required this.icon,
+    this.icon,
     required this.iconColor,
-    required this.route,
+    this.route,
   });
 
   @override
@@ -29,7 +29,7 @@ class HelloAdmin extends StatelessWidget {
           Spacer(),
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, route);
+              Navigator.pushNamed(context, route!);
             },
             icon: Icon(icon, color: iconColor),
           ),

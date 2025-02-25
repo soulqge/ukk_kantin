@@ -22,7 +22,9 @@ class BottomNavAdmin extends StatelessWidget {
         BottomNavigationBarItem(
             icon: Icon(SolarIconsOutline.home), label: 'Home'),
         BottomNavigationBarItem(
-            icon: Icon(SolarIconsOutline.document1), label: 'Histori'),
+            icon: Icon(SolarIconsOutline.stopwatch), label: 'Status'),
+        BottomNavigationBarItem(
+            icon: Icon(SolarIconsOutline.document1), label: 'Menu'),
         BottomNavigationBarItem(
             icon: Icon(SolarIconsOutline.user), label: 'Profile'),
       ],

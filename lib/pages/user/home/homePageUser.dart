@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:ukk_kantin/components/navbar_user.dart';
-import 'package:ukk_kantin/components/user_components/home_page_components/hello_user.dart';
-import 'package:ukk_kantin/components/user_components/home_page_components/home_hint.dart';
-import 'package:ukk_kantin/components/user_components/home_page_components/search_bar_user.dart';
-import 'package:ukk_kantin/components/user_components/home_page_components/stan.dart';
 import 'package:ukk_kantin/pages/user/history/history_page_content.dart';
+import 'package:ukk_kantin/pages/user/home/home_page_content.dart';
+import 'package:ukk_kantin/services/api_services.dart';
 
 class Homepageuser extends StatefulWidget {
   const Homepageuser({super.key});
@@ -26,68 +24,35 @@ class _HomepageuserState extends State<Homepageuser> {
   @override
   void initState() {
     super.initState();
-    debugSharedPreferences();
     checkAuthentication();
-  }
-
-  Future<void> debugSharedPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    print("DEBUG - Token tersimpan: ${prefs.getString("auth_token")}");
-    print("DEBUG - MakerID tersimpan: ${prefs.getString("makerID")}");
   }
 
   Future<void> checkAuthentication() async {
     final prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString("auth_token");
-    String? storedMakerId = prefs.getString("makerID");
+    final apiService = ApiService();
+    final siswaList = await apiService.getProfile();
 
-    print("Token Home: $token");
-    print("Maker ID: $storedMakerId");
-
-    if (token == null) {
+    if (siswaList.isEmpty) {
       if (mounted) {
         Navigator.pushReplacementNamed(context, "/login");
       }
       return;
     }
 
-    try {
-      final response = await http.get(
-        Uri.parse('https://ukk-p2.smktelkom-mlg.sch.id/api/get_profile'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-          'makerID': storedMakerId ?? '23',
-        },
-      );
+    if (mounted) {
+      setState(() {
+        userRole = "Siswa";
+        userName = siswaList[0]["nama_siswa"] ?? "Siswa";
+        makerId = prefs.getString("makerID");
 
-      print("Response status: ${response.statusCode}");
-      print("Response body: ${response.body}");
+        // Simpan id_stan ke SharedPreferences
+        prefs.setString("username", userName!);
+        prefs.setInt("id_user", siswaList[0]["id"]);
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        print("Decoded Data: $data");
-
-        if (mounted) {
-          setState(() {
-            userRole = data['role'];
-            userName = data['username'];
-            makerId = storedMakerId;
-          });
-        }
-      } else {
-        print("Error: ${response.body}");
-        await prefs.remove("auth_token");
-        if (mounted) {
-          Navigator.pushReplacementNamed(context, "/login");
-        }
-      }
-    } catch (e) {
-      print("Error saat request: $e");
+        print(siswaList);
+      });
     }
   }
-
-  
 
   void onPageChanged(int index) {
     setState(() {
@@ -104,58 +69,20 @@ class _HomepageuserState extends State<Homepageuser> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: (userName == null || makerId == null)
-            ? Center(child: CircularProgressIndicator())
-            : PageView(
-                controller: _pageController,
-                onPageChanged: onPageChanged,
-                children: [
-                  HomePageContent(
-                    userName: userName ?? "Guest", // 🔹 Fallback jika `null`
-                    makerId: makerId ?? "Unknown",
-                  ),
-                  HistoryPageContent(),
-                ],
-              ),
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: onPageChanged,
+          children: [
+            HomePageContent(
+              userName: userName ?? "Guest",
+              makerId: makerId ?? "Unknown",
+            ),
+            HistoryPageContent(),
+          ],
+        ),
         bottomNavigationBar: BottomNavUser(
           selectedItem: _currentPage,
           onItemTapped: onItemTapped,
-        ),
-      ),
-    );
-  }
-}
-
-class HomePageContent extends StatelessWidget {
-  final String userName;
-  final String makerId;
-
-  const HomePageContent({
-    super.key,
-    required this.userName,
-    required this.makerId,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            HelloUser(
-              user: userName, // 🔹 Pastikan user tidak null
-              icon: Icons.person,
-              iconColor: Colors.white,
-            ),
-            SizedBox(height: 48),
-            SearchBarUser(width: double.infinity),
-            SizedBox(height: 28),
-            HomeHint(hintHome: "Untuk Kamu"),
-            SizedBox(height: 4),
-            Stan(),
-          ],
         ),
       ),
     );

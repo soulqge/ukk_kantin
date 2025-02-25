@@ -24,7 +24,7 @@ class SearchBarUser extends StatelessWidget {
         decoration: InputDecoration(
           icon:
               const Icon(Icons.search, color: Color.fromRGBO(117, 134, 146, 1)),
-          hintText: "Cari Stan Kamu Disini",
+          hintText: "Cari Menu",
           hintStyle: GoogleFonts.nunitoSans(
               fontSize: 10, color: Color.fromRGBO(117, 134, 146, 1)),
           border: InputBorder.none,

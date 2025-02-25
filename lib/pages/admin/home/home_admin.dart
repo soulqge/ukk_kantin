@@ -5,6 +5,7 @@ import 'package:ukk_kantin/components/navbar_admin.dart';
 import 'package:ukk_kantin/pages/admin/home/home_admin_content.dart';
 import 'package:ukk_kantin/pages/admin/home/siswa_admin.dart';
 import 'package:ukk_kantin/pages/admin/menu_admin/menu_admin_content.dart';
+import 'package:ukk_kantin/pages/admin/status/status_admin.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
 class HomeAdminPage extends StatefulWidget {
@@ -73,8 +74,9 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
                 controller: _pageController,
                 onPageChanged: onPageChanged,
                 children: [
-                  const HomeAdminContent(),
-                  const MenuAdminContent(),
+                  HomeAdminContent(),
+                  StatusAdmin(),
+                  MenuAdminContent(),
                   SiswaAdminContent(),
                 ],
               ),
