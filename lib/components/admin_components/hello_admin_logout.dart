@@ -43,16 +43,24 @@ class HelloAdminLogout extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: Text("Logout"),
-                    content: Text("Apakah Anda yakin ingin logout?"),
+                    backgroundColor: Colors.white,
+                    title: Text(
+                      "Logout",
+                      style: GoogleFonts.outfit(),
+                    ),
+                    content: Text("Apakah Anda yakin ingin logout?",
+                        style: GoogleFonts.outfit()),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: Text("Batal"),
+                        child: Text("Batal",
+                            style: GoogleFonts.outfit(color: Colors.black)),
                       ),
                       TextButton(
                         onPressed: onLogout, // Memanggil fungsi logout
-                        child: Text("Logout"),
+                        child: Text("Logout",
+                            style: GoogleFonts.outfit(
+                                color: Color.fromRGBO(240, 94, 94, 1))),
                       ),
                     ],
                   ),

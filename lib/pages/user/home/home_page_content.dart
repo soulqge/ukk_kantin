@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ukk_kantin/components/user_components/home_page_components/hello_user.dart';
-import 'package:ukk_kantin/components/user_components/home_page_components/home_hint.dart';
 import 'package:ukk_kantin/components/user_components/home_page_components/search_bar_user.dart';
 import 'package:ukk_kantin/components/user_components/home_page_components/stan.dart';
 
@@ -16,6 +16,14 @@ class HomePageContent extends StatefulWidget {
 }
 
 class _HomePageContentState extends State<HomePageContent> {
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, "/login");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -32,6 +40,7 @@ class _HomePageContentState extends State<HomePageContent> {
                   user: widget.userName,
                   icon: Icons.person,
                   iconColor: Colors.white,
+                  onLogout: logout,
                 ),
                 SizedBox(height: 24),
                 SearchBarUser(width: double.infinity),

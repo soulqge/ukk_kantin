@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/admin_components/hello_admin.dart';
 import 'package:ukk_kantin/pages/admin/siswa/edit_siswa.dart';
@@ -35,11 +36,21 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
         _siswaList = ApiService().getSiswa();
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Siswa berhasil dihapus")),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+            content: Text(
+              "Siswa berhasil dihapus",
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Gagal menghapus siswa")),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              "Gagal menghapus siswa",
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
   }
@@ -82,13 +93,23 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
                 future: _siswaList,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                        child: CircularProgressIndicator(
+                      color: Color.fromRGBO(240, 94, 94, 1),
+                    ));
                   } else if (snapshot.hasError) {
                     return Center(
-                      child: Text("Terjadi kesalahan: ${snapshot.error}"),
+                      child: Text(
+                        "Terjadi kesalahan: ${snapshot.error}",
+                        style: GoogleFonts.nunitoSans(),
+                      ),
                     );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text("Tidak ada data siswa"));
+                    return Center(
+                        child: Text(
+                      "Tidak ada data siswa",
+                      style: GoogleFonts.nunitoSans(),
+                    ));
                   }
 
                   List<Map<String, dynamic>> siswaList = snapshot.data!;
@@ -104,7 +125,7 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
                           children: [
                             SlidableAction(
                               onPressed: (_) => _editSiswa(siswa),
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Color.fromRGBO(147, 147, 147, 1),
                               foregroundColor: Colors.white,
                               icon: Icons.edit,
                               label: 'Edit',
@@ -133,36 +154,77 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
                                   ),
                                 );
                               },
-                              backgroundColor: Colors.red,
+                              backgroundColor: Color.fromRGBO(240, 94, 94, 1),
                               foregroundColor: Colors.white,
                               icon: Icons.delete,
                               label: 'Hapus',
                             ),
                           ],
                         ),
-                        child: Card(
-                          color: Colors.white,
-                          margin: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              radius: 24,
-                              backgroundImage: siswa['foto'] != null &&
-                                      siswa['foto'].isNotEmpty
-                                  ? NetworkImage("$baseUrlRil${siswa["foto"]}")
-                                  : null,
-                              child:
-                                  siswa['foto'] == null || siswa['foto'].isEmpty
-                                      ? Text(
-                                          siswa['username'][0].toUpperCase(),
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      : null,
-                            ),
-                            title: Text(siswa['username']),
-                            subtitle: Text(siswa['alamat']),
-                            trailing: Text(siswa['role']),
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: SizedBox(
+                                  width: 102,
+                                  height: 102,
+                                  child: siswa["foto"] == null ||
+                                          siswa["foto"].isEmpty
+                                      ? Image.asset("assets/noImage.png",
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover)
+                                      : Image.network(
+                                          "$baseUrlRil${siswa["foto"]}",
+                                          fit: BoxFit.cover,
+                                          width: 102,
+                                          height: 102,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Image.asset(
+                                                      "assets/placeholder.png",
+                                                      width: 100,
+                                                      height: 100,
+                                                      fit: BoxFit.cover),
+                                        ),
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Nama Lengkap: ${siswa["nama_siswa"]}",
+                                    style: GoogleFonts.nunitoSans(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    "Username: ${siswa["username"]}",
+                                    style: GoogleFonts.nunitoSans(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    "Alamat: ${siswa["alamat"]}",
+                                    style: GoogleFonts.nunitoSans(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                ],
+                              )
+                            ],
                           ),
                         ),
                       );

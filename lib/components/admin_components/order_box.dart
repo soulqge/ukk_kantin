@@ -22,12 +22,12 @@ class OrderBox extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "0$running",
+                "$running",
                 style: GoogleFonts.sen(
                     fontSize: 52.32, fontWeight: FontWeight.bold),
               ),
               Text(
-                "Order Berjalan",
+                "Order Baru",
                 style:
                     GoogleFonts.sen(fontSize: 13, fontWeight: FontWeight.bold),
               ),
@@ -46,12 +46,12 @@ class OrderBox extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "0$request",
+                "$request",
                 style: GoogleFonts.sen(
                     fontSize: 52.32, fontWeight: FontWeight.bold),
               ),
               Text(
-                "Order Request",
+                "Order Selesai",
                 style:
                     GoogleFonts.sen(fontSize: 13, fontWeight: FontWeight.bold),
               ),

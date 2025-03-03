@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:ukk_kantin/components/navbar_user.dart';
-import 'package:ukk_kantin/pages/user/history/history_page_content.dart';
+import 'package:ukk_kantin/pages/user/history/list_tran.dart';
 import 'package:ukk_kantin/pages/user/home/home_page_content.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
@@ -77,7 +77,7 @@ class _HomepageuserState extends State<Homepageuser> {
               userName: userName ?? "Guest",
               makerId: makerId ?? "Unknown",
             ),
-            HistoryPageContent(),
+            ListTran()
           ],
         ),
         bottomNavigationBar: BottomNavUser(

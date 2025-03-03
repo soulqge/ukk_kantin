@@ -9,7 +9,7 @@ class OrderCard extends StatefulWidget {
   final String tanggal;
   final String waktu;
   final String status;
-  final VoidCallback onUpdateStatus; // Callback untuk update UI
+  final VoidCallback onUpdateStatus; 
 
   const OrderCard({
     Key? key,
@@ -114,7 +114,7 @@ class _OrderCardState extends State<OrderCard> {
                         style: GoogleFonts.outfit(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromRGBO(240, 94, 94, 1),
+                          color: Colors.black,
                         ),
                       ),
                     );

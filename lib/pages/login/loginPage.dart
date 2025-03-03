@@ -49,15 +49,24 @@ class _LoginPageState extends State<LoginPage> {
       String token = response['token'];
       String? role = response['role'];
       String? idStan = response['id_stan'];
-      
+
       await saveLoginData(token, role, idStan);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login Sukses')),
+        SnackBar(
+          backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+            content: Text(
+          'Login Sukses',
+          style: GoogleFonts.nunitoSans(),
+        )),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text('Login gagal. Periksa kembali kredensial Anda.')),
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Login gagal. Periksa kembali kredensial Anda.',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
 
@@ -70,7 +79,12 @@ class _LoginPageState extends State<LoginPage> {
       String token, String? role, String? makerId) async {
     if (role == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: Role is null!')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Error: Role is null!',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
       return;
     }
@@ -81,17 +95,19 @@ class _LoginPageState extends State<LoginPage> {
 
     if (role == 'admin_stan' && makerId != null) {
       await prefs.setString('maker_id', makerId);
-      print("maker_id berhasil disimpan: $makerId"); 
-    } else if (role == 'admin_stan') {
-      print("Peringatan: maker_id tidak ditemukan dalam response!");
-    }
+    } else if (role == 'admin_stan') {}
 
     setState(() {
       isLoading = false;
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Login berhasil sebagai $role!')),
+      SnackBar(
+          backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+          content: Text(
+            'Login berhasil sebagai $role!',
+            style: GoogleFonts.nunitoSans(),
+          )),
     );
 
     if (role == 'siswa') {
@@ -100,7 +116,12 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacementNamed(context, '/home_admin');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: Role tidak valid!')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Error: Role tidak valid!',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
   }
@@ -145,7 +166,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? Center(
+                        child: CircularProgressIndicator(
+                        color: Color.fromRGBO(240, 94, 94, 1),
+                      ))
                     : ButtonLogin(
                         hintText: "Log In",
                         onPressed: login,

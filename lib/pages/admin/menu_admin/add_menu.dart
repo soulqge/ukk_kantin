@@ -78,14 +78,24 @@ class _AddMenuState extends State<AddMenu> {
     if (success) {
       print("Menu berhasil ditambahkan!");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Menu berhasil ditambahkan!')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+            content: Text(
+              'Menu berhasil ditambahkan!',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
       Navigator.pop(context);
-      setState(() {}); // Memaksa rebuild halaman setelah kembali
+      setState(() {});
     } else {
       print("Gagal menambahkan menu!");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal menambahkan menu!')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Gagal menambahkan menu!',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
   }

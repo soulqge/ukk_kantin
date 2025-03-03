@@ -44,14 +44,14 @@ class _ChoicePageState extends State<ChoicePage> {
               SizedBox(height: 64),
               ChoiceOptions(
                 icon: SolarIconsBold.user,
-                role: "siswa",
+                role: "Siswa",
                 isSelected: selectedRole == "siswa",
                 onSelected: () => onRoleSelected("siswa"),
               ),
               SizedBox(height: 24),
               ChoiceOptions(
                 icon: SolarIconsBold.cartLarge,
-                role: "admin_stan",
+                role: "Admin Stan",
                 isSelected: selectedRole == "admin_stan",
                 onSelected: () => onRoleSelected("admin_stan"),
               ),

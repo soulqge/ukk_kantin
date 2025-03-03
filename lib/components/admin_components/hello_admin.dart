@@ -4,14 +4,14 @@ import 'package:google_fonts/google_fonts.dart';
 class HelloAdmin extends StatelessWidget {
   final String kantin;
   final IconData? icon;
-  final Color iconColor;
+  final Color? iconColor;
   final String? route;
 
   const HelloAdmin({
     super.key,
     required this.kantin,
     this.icon,
-    required this.iconColor,
+    this.iconColor,
     this.route,
   });
 

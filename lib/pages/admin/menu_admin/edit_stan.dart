@@ -5,16 +5,16 @@ import 'package:ukk_kantin/components/login_components/button_login.dart';
 import 'package:ukk_kantin/components/login_components/form_box_login.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
-class EditMenu extends StatefulWidget {
+class EditStan extends StatefulWidget {
   final Map<String, dynamic> stanData;
 
-  const EditMenu({super.key, required this.stanData});
+  const EditStan({super.key, required this.stanData});
 
   @override
-  State<EditMenu> createState() => _EditMenuState();
+  State<EditStan> createState() => _EditMenuState();
 }
 
-class _EditMenuState extends State<EditMenu> {
+class _EditMenuState extends State<EditStan> {
   late TextEditingController namaLengkapController;
   late TextEditingController namaStanController;
   late TextEditingController usernameController;
@@ -52,15 +52,24 @@ class _EditMenuState extends State<EditMenu> {
 
       print("Stan berhasil diperbarui!");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Stan berhasil diperbarui!')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+            content: Text(
+              'Stan berhasil diperbarui!',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
 
       Navigator.pop(context, true);
     } catch (e) {
       print("Error saat memperbarui stan: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Terjadi kesalahan saat memperbarui data stan.')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Terjadi kesalahan saat memperbarui data stan.',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
 

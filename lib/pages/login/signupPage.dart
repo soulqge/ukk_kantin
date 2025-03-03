@@ -45,21 +45,18 @@ class _SignupPageState extends State<SignupPage> {
     String telp = noTelpController.text.trim();
     String username = usernameController.text.trim();
 
-    print("=== DEBUGGER ===");
-    print("Nama Lengkap: $namaLengkap");
-    print("Alamat: $alamat");
-    print("Username: $username");
-    print("No Telp: $telp");
-    print("Password: $password");
-    print("Foto Profil: ${_image?.path ?? 'Tidak Ada'}");
-
     if (namaLengkap.isEmpty ||
         alamat.isEmpty ||
         password.isEmpty ||
         username.isEmpty ||
         telp.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Harap isi semua field!')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Harap isi semua field!',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
       setState(() {
         isLoading = false;
@@ -80,14 +77,24 @@ class _SignupPageState extends State<SignupPage> {
       print("Response dari API: $response");
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registrasi berhasil! Silakan login.')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+            content: Text(
+              'Registrasi berhasil! Silakan login.',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
 
       Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
       print("Error saat register: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Terjadi kesalahan saat registrasi.')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Terjadi kesalahan saat registrasi.',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
 

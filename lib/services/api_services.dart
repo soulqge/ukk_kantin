@@ -346,6 +346,211 @@ class ApiService {
       return [];
     }
   }
+
+  Future<List<Map<String, dynamic>>> getOrderSiswa(String status) async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        print("Token tidak ditemukan, harap login kembali.");
+        return [];
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("maker_id") ?? makerID;
+
+      final response = await http.get(
+        Uri.parse('${baseUrl}showorder/$status'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+      );
+
+      print("Response showOrder: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          final data = jsonResponse["data"];
+
+          if (data is List) {
+            return data.cast<Map<String, dynamic>>();
+          } else if (data is Map<String, dynamic>) {
+            return [data];
+          }
+        }
+      }
+      return [];
+    } catch (e) {
+      print("Error showOrder: $e");
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> cetakNota(String id) async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        print("Token tidak ditemukan, harap login kembali.");
+        return [];
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("maker_id") ?? makerID;
+
+      final response = await http.get(
+        Uri.parse('${baseUrl}cetaknota/$id'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+      );
+
+      print("Response cetakNota: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          final data = jsonResponse["data"];
+
+          if (data is List) {
+            return data.cast<Map<String, dynamic>>();
+          } else if (data is Map<String, dynamic>) {
+            return [data];
+          }
+        }
+      }
+      return [];
+    } catch (e) {
+      print("Error cetakNota: $e");
+      return [];
+    }
+  }
+
+  Future<List<int>> getAllFoodMenuIds() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("access_token");
+    var headers = {
+      "Authorization": "Bearer $token",
+      'Content-Type': 'application/json',
+      "makerID": makerID
+    };
+
+    try {
+      // Fetch food menu
+      var responseFood = await http.post(
+        Uri.parse("$baseUrl/getmenufood"),
+        body: {"search": ""},
+        headers: headers,
+      );
+
+      // Fetch drink menu
+      var responseDrink = await http.post(
+        Uri.parse("$baseUrl/getmenudrink"),
+        body: {"search": ""},
+        headers: headers,
+      );
+
+      if (responseFood.statusCode == 200 && responseDrink.statusCode == 200) {
+        List<int> menuIds = [];
+
+        Map<String, dynamic> foodData = jsonDecode(responseFood.body);
+        Map<String, dynamic> drinkData = jsonDecode(responseDrink.body);
+
+        for (var item in foodData["data"]) {
+          menuIds.add(item["id_menu"]);
+        }
+        for (var item in drinkData["data"]) {
+          menuIds.add(item["id_menu"]);
+        }
+
+        return menuIds;
+      } else {
+        print(
+            "Failed to fetch menu. Status: ${responseFood.statusCode}, ${responseDrink.statusCode}");
+        return [];
+      }
+    } catch (e) {
+      print("Error fetching menu IDs: $e");
+      return [];
+    }
+  }
+
+  Future<String?> getFoodName(int idMenu) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("access_token");
+
+      if (token == null) {
+        print("Token tidak ditemukan. Harap login kembali.");
+        return null;
+      }
+
+      var headers = {
+        "Authorization": "Bearer $token",
+        'Content-Type': 'application/json',
+        "makerID": makerID
+      };
+
+      print("Fetching food and drink menu..."); // Debugging
+
+      // Fetch food menu
+      final foodResponse = await http.post(
+        Uri.parse('$baseUrl/getmenufood'),
+        body: jsonEncode({"search": ""}),
+        headers: headers,
+      );
+
+      // Fetch drink menu
+      final drinkResponse = await http.post(
+        Uri.parse('$baseUrl/getmenudrink'),
+        body: jsonEncode({"search": ""}),
+        headers: headers,
+      );
+
+      if (foodResponse.statusCode == 200) {
+        final foodData = jsonDecode(foodResponse.body);
+        print("Food Menu Response: ${foodData["data"]}"); // Debugging
+
+        for (var item in foodData["data"]) {
+          if (item["id_menu"] == idMenu) {
+            print("Ditemukan di makanan: ${item["nama_makanan"]}");
+            return item["nama_makanan"];
+          }
+        }
+      } else {
+        print(
+            "Gagal mendapatkan makanan, status code: ${foodResponse.statusCode}");
+      }
+
+      if (drinkResponse.statusCode == 200) {
+        final drinkData = jsonDecode(drinkResponse.body);
+        print("Drink Menu Response: ${drinkData["data"]}"); // Debugging
+
+        for (var item in drinkData["data"]) {
+          if (item["id_menu"] == idMenu) {
+            print("Ditemukan di minuman: ${item["nama_makanan"]}");
+            return item["nama_makanan"];
+          }
+        }
+      } else {
+        print(
+            "Gagal mendapatkan minuman, status code: ${drinkResponse.statusCode}");
+      }
+
+      return null;
+    } catch (e) {
+      print("Error getFoodName: $e");
+      return null;
+    }
+  }
+
   //siswa
 
   //stan
@@ -599,6 +804,92 @@ class ApiService {
 
       final response = await http.get(
         Uri.parse('${baseUrl}getorder/$status'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+      );
+
+      print("Response getOrder: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          final data = jsonResponse["data"];
+
+          if (data is List) {
+            return data.cast<Map<String, dynamic>>();
+          } else if (data is Map<String, dynamic>) {
+            return [data];
+          }
+        }
+      }
+      return [];
+    } catch (e) {
+      print("Error getOrder: $e");
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getOrderAdminBelum() async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        print("Token tidak ditemukan, harap login kembali.");
+        return [];
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("maker_id") ?? makerID;
+
+      final response = await http.get(
+        Uri.parse('${baseUrl}getorder/belum dikonfirm'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': storedMakerId,
+        },
+      );
+
+      print("Response getOrder: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          final data = jsonResponse["data"];
+
+          if (data is List) {
+            return data.cast<Map<String, dynamic>>();
+          } else if (data is Map<String, dynamic>) {
+            return [data];
+          }
+        }
+      }
+      return [];
+    } catch (e) {
+      print("Error getOrder: $e");
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getOrderAdminSelesai() async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        print("Token tidak ditemukan, harap login kembali.");
+        return [];
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final storedMakerId = prefs.getString("maker_id") ?? makerID;
+
+      final response = await http.get(
+        Uri.parse('${baseUrl}getorder/sampai'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

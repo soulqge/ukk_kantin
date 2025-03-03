@@ -55,11 +55,21 @@ class _MenuListAdminState extends State<MenuListAdmin> {
         items.removeWhere((data) => data["id"].toString() == menuId);
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Menu deleted successfully")),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+            content: Text(
+              "Menu deleted successfully",
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to delete menu")),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              "Failed to delete menu",
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
   }
@@ -77,7 +87,10 @@ class _MenuListAdminState extends State<MenuListAdmin> {
         : items.where((data) => data["jenis"] == widget.category).toList();
 
     return isLoading
-        ? const Center(child: CircularProgressIndicator())
+        ? const Center(
+            child: CircularProgressIndicator(
+            color: Color.fromRGBO(240, 94, 94, 1),
+          ))
         : filteredItems.isEmpty
             ? const Center(
                 child: Text(

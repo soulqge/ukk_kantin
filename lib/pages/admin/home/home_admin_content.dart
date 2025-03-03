@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ukk_kantin/components/admin_components/admin_hint.dart';
 import 'package:ukk_kantin/components/admin_components/hello_admin_logout.dart';
 import 'package:ukk_kantin/components/admin_components/order_box.dart';
 import 'package:ukk_kantin/components/admin_components/pemasukan.dart';
-import 'package:ukk_kantin/pages/admin/home/list_tran_admin.dart';
-import 'package:ukk_kantin/pages/admin/menu_admin/edit_menu.dart';
+import 'package:ukk_kantin/pages/admin/home/histori.dart';
+import 'package:ukk_kantin/pages/admin/menu_admin/edit_stan.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
 class HomeAdminContent extends StatefulWidget {
@@ -19,13 +20,17 @@ class HomeAdminContent extends StatefulWidget {
 class _HomeAdminContentState extends State<HomeAdminContent> {
   String kantinName = "Loading...";
   int _pemasukan = 0;
-  List<Map<String, dynamic>> _stanList = []; // Tambahkan state untuk stan
+  List<Map<String, dynamic>> _stanList = [];
+  int _countOrderBelum = 0;
+  int _countOrderSelesai = 0;
 
   @override
   void initState() {
     super.initState();
     loadAdminData();
     fetchPemasukan();
+    _fetchOrderBelum();
+    _fetchOrderSelesai();
   }
 
   Future<void> loadAdminData() async {
@@ -85,7 +90,7 @@ class _HomeAdminContentState extends State<HomeAdminContent> {
         context,
         MaterialPageRoute(
           builder: (context) =>
-              EditMenu(stanData: _stanList[0]), // Kirim data stan pertama
+              EditStan(stanData: _stanList[0]), // Kirim data stan pertama
         ),
       );
 
@@ -94,9 +99,28 @@ class _HomeAdminContentState extends State<HomeAdminContent> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Data stan tidak ditemukan')),
+        SnackBar(
+          backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+          'Data stan tidak ditemukan',
+          style: GoogleFonts.nunitoSans(),
+        )),
       );
     }
+  }
+
+  Future<void> _fetchOrderBelum() async {
+    final orderList = await ApiService().getOrderAdminBelum();
+    setState(() {
+      _countOrderBelum = orderList.length;
+    });
+  }
+
+  Future<void> _fetchOrderSelesai() async {
+    final orderList = await ApiService().getOrderAdminSelesai();
+    setState(() {
+      _countOrderSelesai = orderList.length;
+    });
   }
 
   @override
@@ -120,13 +144,13 @@ class _HomeAdminContentState extends State<HomeAdminContent> {
                 onLogout: logout,
               ),
               const SizedBox(height: 16),
-              OrderBox(running: 6, request: 9),
+              OrderBox(running: _countOrderBelum, request: _countOrderSelesai),
               const SizedBox(height: 16),
               Pemasukan(penghasilan: _pemasukan),
               const SizedBox(height: 34),
-              const AdminHint(hint: "Daftar Transaksi"),
+              const AdminHint(hint: "Histori Transaksi"),
               const SizedBox(height: 12),
-              const ListTranAdmin(),
+              HistoriTransaksiPage()
             ],
           ),
         ),

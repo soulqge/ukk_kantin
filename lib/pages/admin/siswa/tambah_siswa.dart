@@ -44,21 +44,18 @@ class _TambahSiswaAdminState extends State<TambahSiswaAdmin> {
     String telp = noTelpController.text.trim();
     String username = usernameController.text.trim();
 
-    print("=== DEBUGGER ===");
-    print("Nama Lengkap: $namaLengkap");
-    print("Alamat: $alamat");
-    print("Username: $username");
-    print("No Telp: $telp");
-    print("Password: $password");
-    print("Foto Profil: ${_image?.path ?? 'Tidak Ada'}");
-
     if (namaLengkap.isEmpty ||
         alamat.isEmpty ||
         password.isEmpty ||
         username.isEmpty ||
         telp.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Harap isi semua field!')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Harap isi semua field!',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
       setState(() {
         isLoading = false;
@@ -79,14 +76,24 @@ class _TambahSiswaAdminState extends State<TambahSiswaAdmin> {
       print("Response dari API: $response");
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Tambah Siswa Berhasil')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+            content: Text(
+              'Tambah Siswa Berhasil',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
 
       Navigator.pop(context);
     } catch (e) {
       print("Error saat register: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Terjadi kesalahan saat registrasi.')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Terjadi kesalahan saat registrasi.',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
 
@@ -154,7 +161,8 @@ class _TambahSiswaAdminState extends State<TambahSiswaAdmin> {
                 SizedBox(height: MediaQuery.sizeOf(context).height * 0.06),
                 isLoading
                     ? Center(child: CircularProgressIndicator())
-                    : ButtonLogin(hintText: "Tambah Siswa", onPressed: registerUser),
+                    : ButtonLogin(
+                        hintText: "Tambah Siswa", onPressed: registerUser),
               ],
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:ukk_kantin/components/admin_components/hello_admin.dart';
 import 'package:ukk_kantin/components/admin_components/histori/order_card.dart';
 import 'package:ukk_kantin/services/api_services.dart';
@@ -14,7 +15,12 @@ class _StatusAdminState extends State<StatusAdmin>
     with SingleTickerProviderStateMixin {
   late Future<List<Map<String, dynamic>>> _orderList;
   late TabController _tabController;
-  final List<String> statusList = ["Order", "Dimasak", "Diantar", "Sampai"];
+  final List<String> statusList = [
+    "Belum Dikonfirm",
+    "Dimasak",
+    "Diantar",
+    "Sampai"
+  ];
 
   @override
   void initState() {
@@ -43,14 +49,13 @@ class _StatusAdminState extends State<StatusAdmin>
             padding: EdgeInsets.all(20),
             child: HelloAdmin(
               kantin: 'Status Pesanan',
-              iconColor: Colors.red,
             ),
           ),
           TabBar(
             controller: _tabController,
-            labelColor: Colors.red,
+            labelColor: Color.fromRGBO(240, 94, 94, 1),
             unselectedLabelColor: Colors.black,
-            indicatorColor: Colors.red,
+            indicatorColor: Color.fromRGBO(240, 94, 94, 1),
             tabs: statusList.map((status) => Tab(text: status)).toList(),
           ),
           Expanded(
@@ -58,12 +63,18 @@ class _StatusAdminState extends State<StatusAdmin>
               future: _orderList,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Color.fromRGBO(240, 94, 94, 1),
+                  ));
                 } else if (snapshot.hasError) {
                   return Center(
-                      child: Text("Terjadi kesalahan: ${snapshot.error}"));
+                      child: Text("Terjadi kesalahan: ${snapshot.error}",
+                          style: GoogleFonts.outfit()));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("Tidak ada pesanan."));
+                  return Center(
+                      child: Text("Tidak ada pesanan.",
+                          style: GoogleFonts.outfit(fontWeight: FontWeight.bold)));
                 }
 
                 final orders = snapshot.data!;

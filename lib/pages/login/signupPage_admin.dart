@@ -32,13 +32,6 @@ class _SignupPageAdminState extends State<SignupPageAdmin> {
     String noTelp = noTelpController.text.trim();
     String password = passwordController.text.trim();
 
-    print("=== Register Admin Stan ===");
-    print("Nama Lengkap: $namaLengkap");
-    print("Nama Stan: $namaStan");
-    print("Username: $username");
-    print("No Telp: $noTelp");
-    print("Password: $password");
-
     try {
       var response = await ApiService().registerStan(
         namaPemilik: namaLengkap,
@@ -52,14 +45,24 @@ class _SignupPageAdminState extends State<SignupPageAdmin> {
 
       // Abaikan response, langsung tampilkan pesan sukses dan navigasikan
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Registrasi berhasil! Silakan login.')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+            content: Text(
+              'Registrasi berhasil! Silakan login.',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
 
       Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
       print("Error saat register: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Terjadi kesalahan saat registrasi.')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Terjadi kesalahan saat registrasi.',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
 

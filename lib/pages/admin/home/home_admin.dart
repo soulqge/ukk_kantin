@@ -69,7 +69,7 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: userName == null
-            ? Center(child: CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator(color: Color.fromRGBO(240, 94, 94, 1),))
             : PageView(
                 controller: _pageController,
                 onPageChanged: onPageChanged,

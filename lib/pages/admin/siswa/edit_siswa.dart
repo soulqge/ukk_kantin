@@ -71,15 +71,24 @@ class _FormEditSiswaState extends State<FormEditSiswa> {
 
       print("Siswa berhasil diperbarui!");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Siswa berhasil diperbarui!')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+            content: Text(
+              'Siswa berhasil diperbarui!',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
 
       Navigator.pop(context, true);
     } catch (e) {
       print("Error saat memperbarui siswa: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Terjadi kesalahan saat memperbarui data siswa.')),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Terjadi kesalahan saat memperbarui data siswa.',
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
 
