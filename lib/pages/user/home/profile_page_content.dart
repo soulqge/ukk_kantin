@@ -1,45 +1,100 @@
 import 'package:flutter/material.dart';
-import 'package:ukk_kantin/components/user_components/home_page_components/home_hint.dart';
-import 'package:ukk_kantin/components/user_components/home_page_components/search_bar_user.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:ukk_kantin/services/api_services.dart';
 
-class ProfilePageContent extends StatelessWidget {
-  const ProfilePageContent({super.key});
+class TestStan extends StatefulWidget {
+  const TestStan({
+    super.key,
+  });
+
+  @override
+  State<TestStan> createState() => _StanState();
+}
+
+class _StanState extends State<TestStan> {
+  List<Map<String, dynamic>> items = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStan();
+  }
+
+  Future<void> fetchStan() async {
+    final apiService = ApiService();
+    try {
+      List<dynamic> stan = await apiService.getAllStan();
+      if (mounted) {
+        setState(() {
+          items = List<Map<String, dynamic>>.from(stan);
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+      debugPrint("Error fetching menus: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // HelloUser(),
-          SizedBox(height: 48),
-          SearchBarUser(width: 10,),
-          SizedBox(height: 28),
-          HomeHint(hintHome: "Untuk Profile",),
-          SizedBox(height: 4),
-          Container(
-            color: Colors.yellow,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    bottomLeft: Radius.circular(16),
-                  ),
-                  child: Image.asset(
-                    'assets/placeholder.png',
-                    height: 112,
-                    width: 146,
-                    fit: BoxFit.cover,
-                  ),
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              var item = items[index];
+
+              return Container(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  item["nama_stan"],
+                                  style: GoogleFonts.nunitoSans(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text("${item["nama_pemilik"]}",
+                                  style: GoogleFonts.nunitoSans(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                      color: const Color.fromRGBO(
+                                          240, 94, 94, 1))),
+                              const Spacer(),
+                              Text((item["telp"]),
+                                  style: GoogleFonts.sen(
+                                      fontSize: 17.89,
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              );
+            },
+          );
   }
 }

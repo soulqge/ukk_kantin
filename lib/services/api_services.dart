@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -321,6 +322,32 @@ class ApiService {
     }
   }
 
+  Future<List<dynamic>> getAllStan() async {
+    try {
+      final token = await _getToken();
+      final response = await http.post(
+        Uri.parse('${baseUrl}get_all_stan'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': makerID,
+        },
+      );
+
+      print("Response Get All Stan: ${response.body}");
+
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        return responseData['data'] ?? [];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error getStan: $e");
+      return [];
+    }
+  }
+
   Future<List<dynamic>> getMenuMinuman() async {
     try {
       final token = await _getToken();
@@ -500,14 +527,12 @@ class ApiService {
 
       print("Fetching food and drink menu..."); // Debugging
 
-      // Fetch food menu
       final foodResponse = await http.post(
         Uri.parse('$baseUrl/getmenufood'),
         body: jsonEncode({"search": ""}),
         headers: headers,
       );
 
-      // Fetch drink menu
       final drinkResponse = await http.post(
         Uri.parse('$baseUrl/getmenudrink'),
         body: jsonEncode({"search": ""}),
@@ -549,6 +574,39 @@ class ApiService {
       print("Error getFoodName: $e");
       return null;
     }
+  }
+
+  Future<Map<String, dynamic>> pesan() async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        print("Token tidak ditemukan.");
+        return {};
+      }
+
+      final response = await http.get(
+        Uri.parse('${baseUrl}pesan'),
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+          'makerID': makerID,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        if (jsonResponse is Map<String, dynamic> &&
+            jsonResponse.containsKey("data")) {
+          return jsonResponse["data"];
+        }
+      } else {
+        print(
+            "Gagal mengambil data, status code: ${response.statusCode},");
+      }
+    } catch (e) {
+      print("Error Pesan: $e");
+    }
+    return {};
   }
 
   //siswa
@@ -951,6 +1009,32 @@ class ApiService {
     } catch (e) {
       print("Error updateOrderStatus: $e");
       return false;
+    }
+  }
+
+  Future<List<dynamic>> showDiskon() async {
+    try {
+      final token = await _getToken();
+      final response = await http.post(
+        Uri.parse('${baseUrl}showdiskon'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': makerID,
+        },
+      );
+
+      print("Response Show Diskon: ${response.body}");
+
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        return responseData['data'] ?? [];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error Show Diskon: $e");
+      return [];
     }
   }
 

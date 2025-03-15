@@ -80,7 +80,7 @@ class _HomeAdminContentState extends State<HomeAdminContent> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     if (mounted) {
-      Navigator.pushReplacementNamed(context, "/login");
+      Navigator.pushReplacementNamed(context, "/login_admin");
     }
   }
 

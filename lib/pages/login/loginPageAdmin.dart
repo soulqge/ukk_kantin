@@ -7,14 +7,14 @@ import 'package:ukk_kantin/components/login_components/check.dart';
 import 'package:ukk_kantin/components/login_components/form_box_login.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class Loginpageadmin extends StatefulWidget {
+  const Loginpageadmin({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginpageadminState createState() => _LoginpageadminState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginpageadminState extends State<Loginpageadmin> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
@@ -150,9 +150,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 40),
                 CheckText(
-                    hintText: "New User?",
-                    hintButton: "Register Here",
-                    route: '/signup_siswa'),
+                  hintText: "New User?",
+                  hintButton: "Register Here",
+                  route: '/signup_admin',
+                ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 isLoading
                     ? Center(

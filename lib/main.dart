@@ -4,6 +4,7 @@ import 'package:ukk_kantin/pages/admin/menu_admin/add_menu.dart';
 import 'package:ukk_kantin/pages/admin/siswa/tambah_siswa.dart';
 import 'package:ukk_kantin/pages/login/choicePage.dart';
 import 'package:ukk_kantin/pages/login/loginPage.dart';
+import 'package:ukk_kantin/pages/login/loginPageAdmin.dart';
 import 'package:ukk_kantin/pages/login/signupPage.dart';
 import 'package:ukk_kantin/pages/login/signupPage_admin.dart';
 import 'package:ukk_kantin/pages/user/home/homePageUser.dart';
@@ -14,7 +15,8 @@ void main() async {
     debugShowCheckedModeBanner: false,
     initialRoute: '/choice',
     routes: {
-      '/login': (context) => LoginPage(),
+      '/login_siswa': (context) => LoginPage(),
+      '/login_admin': (context) => Loginpageadmin(),
       '/signup_siswa': (context) => SignupPage(),
       '/signup_admin': (context) => SignupPageAdmin(),
       '/choice': (context) => ChoicePage(),
@@ -22,7 +24,6 @@ void main() async {
       '/home_admin': (context) => HomeAdminPage(),
       '/tambah_menu': (context) => AddMenu(),
       '/tambah_siswa': (context) => TambahSiswaAdmin(),
-      
     },
   ));
 }

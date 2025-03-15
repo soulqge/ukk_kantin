@@ -162,7 +162,7 @@ class _SignupPageState extends State<SignupPage> {
                 CheckText(
                     hintText: "Sudah punya akun?",
                     hintButton: "Login di sini",
-                    route: '/login'),
+                    route: '/login_siswa'),
                 SizedBox(height: MediaQuery.sizeOf(context).height * 0.06),
                 isLoading
                     ? Center(child: CircularProgressIndicator())

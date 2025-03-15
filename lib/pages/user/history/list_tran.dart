@@ -9,7 +9,12 @@ import 'package:ukk_kantin/pages/user/history/detail_tran_page.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
 class ListTran extends StatefulWidget {
-  const ListTran({super.key});
+  final String searchQuery;
+
+  const ListTran({
+    super.key,
+    this.searchQuery = "",
+  });
 
   @override
   State<ListTran> createState() => _ListTranState();
@@ -104,6 +109,7 @@ class _ListTranState extends State<ListTran> {
               children: [
                 SearchBarUser(
                   width: MediaQuery.sizeOf(context).width * 0.6,
+                  onSearch: (String) {},
                 ),
                 ButtonSearch(
                   icon: SolarIconsBold.filter,
@@ -123,12 +129,22 @@ class _ListTranState extends State<ListTran> {
               future: _orderList,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(
+                      child: CircularProgressIndicator(
+                    color: Color.fromRGBO(240, 94, 94, 1),
+                  ));
                 } else if (snapshot.hasError) {
-                  return const Center(
-                      child: Text("Terjadi kesalahan, coba lagi."));
+                  return Center(
+                      child: Text(
+                    "Terjadi kesalahan, coba lagi.",
+                    style: GoogleFonts.outfit(),
+                  ));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("Tidak ada transaksi."));
+                  return Center(
+                      child: Text(
+                    "Tidak ada transaksi.",
+                    style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+                  ));
                 }
 
                 final orderList = snapshot.data!;

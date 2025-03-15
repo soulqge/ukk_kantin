@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:ukk_kantin/components/navbar_user.dart';
 import 'package:ukk_kantin/pages/user/history/list_tran.dart';
 import 'package:ukk_kantin/pages/user/home/home_page_content.dart';
+import 'package:ukk_kantin/pages/user/home/profile_page_content.dart';
+import 'package:ukk_kantin/pages/user/home/test.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
 class Homepageuser extends StatefulWidget {
@@ -45,7 +47,6 @@ class _HomepageuserState extends State<Homepageuser> {
         userName = siswaList[0]["nama_siswa"] ?? "Siswa";
         makerId = prefs.getString("makerID");
 
-        // Simpan id_stan ke SharedPreferences
         prefs.setString("username", userName!);
         prefs.setInt("id_user", siswaList[0]["id"]);
 
@@ -77,7 +78,8 @@ class _HomepageuserState extends State<Homepageuser> {
               userName: userName ?? "Guest",
               makerId: makerId ?? "Unknown",
             ),
-            ListTran()
+            ListTran(),
+            TestStan()
           ],
         ),
         bottomNavigationBar: BottomNavUser(

@@ -121,7 +121,7 @@ class _SignupPageAdminState extends State<SignupPageAdmin> {
                 CheckText(
                   hintText: "Already Have An Account?",
                   hintButton: "Login Here",
-                  route: '/login',
+                  route: '/login_admin',
                 ),
                 SizedBox(height: MediaQuery.sizeOf(context).height * 0.06),
                 isLoading

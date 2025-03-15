@@ -43,7 +43,10 @@ class _DetailTransactionState extends State<DetailTranPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    DateTime date = DateTime.parse(widget.dataTransaksi["tanggal"]);
+    String formattedDate =
+        "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+    return Scaffold(                                                                            
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -74,6 +77,9 @@ class _DetailTransactionState extends State<DetailTranPage> {
                         )),
                   ],
                 )),
+            Text("$formattedDate",
+                style: GoogleFonts.outfit(
+                    fontSize: 16, fontWeight: FontWeight.w600)),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.all(26),
@@ -85,12 +91,6 @@ class _DetailTransactionState extends State<DetailTranPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildTransactionHeader(),
-                          const SizedBox(height: 18),
-                          const Divider(
-                            height: 0,
-                            color: Color.fromRGBO(214, 214, 214, 1),
-                          ),
                           const SizedBox(height: 18),
                           _buildItemList(),
                           const SizedBox(height: 10),
@@ -100,6 +100,10 @@ class _DetailTransactionState extends State<DetailTranPage> {
                           ),
                           const SizedBox(height: 18),
                           _buildPaymentDetails(),
+                          const SizedBox(height: 18),
+                          _buildDiskon(),
+                          const SizedBox(height: 18),
+                          _buildStatus()
                         ],
                       ),
                     ),
@@ -110,21 +114,6 @@ class _DetailTransactionState extends State<DetailTranPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildTransactionHeader() {
-    DateTime date = DateTime.parse(widget.dataTransaksi["tanggal"]);
-    String formattedDate =
-        "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("$formattedDate", style: GoogleFonts.outfit()),
-        Text(widget.dataTransaksi["status"].toString().capitalize(),
-            style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
-      ],
     );
   }
 
@@ -197,16 +186,53 @@ class _DetailTransactionState extends State<DetailTranPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Total', softWrap: true, style: GoogleFonts.nunitoSans()),
+            Text('Total',
+                softWrap: true,
+                style: GoogleFonts.nunitoSans(fontWeight: FontWeight.bold)),
             Text('Rp.${numberFormat.format(totalHargaAkhir)}',
                 softWrap: true,
                 style: GoogleFonts.nunitoSans(
                   fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 )),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildDiskon() {
+    return Row(
+      children: [
+        Icon(
+          Icons.discount,
+          color: Color.fromRGBO(240, 94, 94, 1),
+        ),
+        SizedBox(width: 5),
+        Text('Diskon Hari guru', // placeholder
+            softWrap: true,
+            style: GoogleFonts.nunitoSans(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            )),
+      ],
+    );
+  }
+
+  Widget _buildStatus() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(48, 12, 48, 12),
+      decoration: BoxDecoration(
+          color: Color.fromRGBO(254, 239, 239, 1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Color.fromRGBO(240, 94, 94, 1))),
+      child: Center(
+        child: Text(widget.dataTransaksi["status"].toString().capitalize(),
+            style: GoogleFonts.outfit(
+                fontWeight: FontWeight.bold,
+                color: Color.fromRGBO(240, 94, 94, 1))),
+      ),
     );
   }
 }

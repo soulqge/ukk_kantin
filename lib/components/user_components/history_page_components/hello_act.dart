@@ -7,7 +7,7 @@ class HelloAct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      "Activity",
+      "History",
       style:
           GoogleFonts.outfit(fontSize: 32, fontWeight: FontWeight.bold),
     );

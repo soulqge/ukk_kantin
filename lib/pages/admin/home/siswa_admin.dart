@@ -135,20 +135,35 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: const Text("Hapus Siswa"),
-                                    content: const Text(
-                                        "Apakah Anda yakin ingin menghapus siswa ini?"),
+                                    backgroundColor: Colors.white,
+                                    title: Text(
+                                      "Hapus Siswa",
+                                      style: GoogleFonts.outfit(),
+                                    ),
+                                    content: Text(
+                                      "Apakah Anda yakin ingin menghapus siswa ini?",
+                                      style: GoogleFonts.outfit(),
+                                    ),
                                     actions: [
                                       TextButton(
                                         onPressed: () => Navigator.pop(context),
-                                        child: const Text("Batal"),
+                                        child: Text(
+                                          "Batal",
+                                          style: GoogleFonts.outfit(
+                                              color: Colors.black),
+                                        ),
                                       ),
                                       TextButton(
                                         onPressed: () {
                                           _deleteSiswa(siswa["id"].toString());
                                           Navigator.pop(context);
                                         },
-                                        child: const Text("Hapus"),
+                                        child: Text(
+                                          "Hapus",
+                                          style: GoogleFonts.outfit(
+                                              color: Color.fromRGBO(
+                                                  240, 94, 94, 1)),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -172,7 +187,7 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
                                   height: 102,
                                   child: siswa["foto"] == null ||
                                           siswa["foto"].isEmpty
-                                      ? Image.asset("assets/noImage.png",
+                                      ? Image.asset("assets/noIMG.png",
                                           width: 100,
                                           height: 100,
                                           fit: BoxFit.cover)

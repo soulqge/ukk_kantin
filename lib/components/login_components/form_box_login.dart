@@ -13,6 +13,7 @@ class FormBoxLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      style: GoogleFonts.nunitoSans(),
       cursorColor: Colors.black,
       decoration: InputDecoration(
           enabledBorder: UnderlineInputBorder(

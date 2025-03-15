@@ -2,25 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ukk_kantin/components/user_components/home_page_components/hello_user.dart';
 import 'package:ukk_kantin/components/user_components/home_page_components/search_bar_user.dart';
-import 'package:ukk_kantin/components/user_components/home_page_components/stan.dart';
+import 'package:ukk_kantin/pages/user/pesan/stan.dart';
 
 class HomePageContent extends StatefulWidget {
   final String userName;
   final String makerId;
 
-  const HomePageContent(
-      {super.key, required this.userName, required this.makerId});
+  const HomePageContent({
+    super.key,
+    required this.userName,
+    required this.makerId,
+  });
 
   @override
   State<HomePageContent> createState() => _HomePageContentState();
 }
 
 class _HomePageContentState extends State<HomePageContent> {
+  String searchQuery = "";
+
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     if (mounted) {
-      Navigator.pushReplacementNamed(context, "/login");
+      Navigator.pushReplacementNamed(context, "/login_siswa");
     }
   }
 
@@ -42,12 +47,19 @@ class _HomePageContentState extends State<HomePageContent> {
                   iconColor: Colors.white,
                   onLogout: logout,
                 ),
-                SizedBox(height: 24),
-                SearchBarUser(width: double.infinity),
+                const SizedBox(height: 24),
+                SearchBarUser(
+                  width: double.infinity,
+                  onSearch: (query) {
+                    setState(() {
+                      searchQuery = query.toLowerCase();
+                    });
+                  },
+                ),
               ],
             ),
           ),
-          TabBar(
+          const TabBar(
             labelColor: Colors.black,
             indicatorColor: Color.fromRGBO(240, 94, 94, 1),
             tabs: [
@@ -59,9 +71,9 @@ class _HomePageContentState extends State<HomePageContent> {
           Expanded(
             child: TabBarView(
               children: [
-                Stan(),
-                Stan(category: "makanan"),
-                Stan(category: "minuman"),
+                Stan(searchQuery: searchQuery),
+                Stan(category: "makanan", searchQuery: searchQuery),
+                Stan(category: "minuman", searchQuery: searchQuery),
               ],
             ),
           ),

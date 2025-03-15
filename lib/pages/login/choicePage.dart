@@ -22,9 +22,9 @@ class _ChoicePageState extends State<ChoicePage> {
 
   void navigateToNextPage() {
     if (selectedRole == "siswa") {
-      Navigator.pushNamed(context, '/signup_siswa', arguments: selectedRole);
+      Navigator.popAndPushNamed(context, '/login_siswa', arguments: selectedRole);
     } else if (selectedRole == "admin_stan") {
-      Navigator.pushNamed(context, '/signup_admin', arguments: selectedRole);
+      Navigator.popAndPushNamed(context, '/login_admin', arguments: selectedRole);
     }
   }
 

@@ -24,7 +24,8 @@ class HelloUser extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            "Hello $user",
+            "Hello, \n$user",
+            overflow: TextOverflow.clip,
             style:
                 GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.w800),
           ),
