@@ -26,6 +26,8 @@ class BottomNavAdmin extends StatelessWidget {
         BottomNavigationBarItem(
             icon: Icon(SolarIconsOutline.document1), label: 'Menu'),
         BottomNavigationBarItem(
+            icon: Icon(SolarIconsOutline.sale), label: 'Diskon'),
+        BottomNavigationBarItem(
             icon: Icon(SolarIconsOutline.user), label: 'Profile'),
       ],
       selectedItemColor: Colors.black,

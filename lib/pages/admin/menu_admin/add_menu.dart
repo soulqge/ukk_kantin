@@ -115,9 +115,6 @@ class _AddMenuState extends State<AddMenu> {
                 children: [
                   HelloAdmin(
                     kantin: "Tambah Menu Baru",
-                    icon: Icons.abc,
-                    iconColor: Colors.white,
-                    route: '/tambah_menu',
                   ),
                   SizedBox(height: 16),
                   ItemForm(

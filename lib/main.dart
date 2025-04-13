@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ukk_kantin/pages/admin/diskon_admin/add_diskon.dart';
 import 'package:ukk_kantin/pages/admin/home/home_admin.dart';
 import 'package:ukk_kantin/pages/admin/menu_admin/add_menu.dart';
 import 'package:ukk_kantin/pages/admin/siswa/tambah_siswa.dart';
@@ -23,6 +24,7 @@ void main() async {
       '/home_user': (context) => Homepageuser(),
       '/home_admin': (context) => HomeAdminPage(),
       '/tambah_menu': (context) => AddMenu(),
+      '/tambah_diskon': (context) => AddDiskon(),
       '/tambah_siswa': (context) => TambahSiswaAdmin(),
     },
   ));

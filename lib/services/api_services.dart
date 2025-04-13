@@ -600,8 +600,7 @@ class ApiService {
           return jsonResponse["data"];
         }
       } else {
-        print(
-            "Gagal mengambil data, status code: ${response.statusCode},");
+        print("Gagal mengambil data, status code: ${response.statusCode},");
       }
     } catch (e) {
       print("Error Pesan: $e");
@@ -1035,6 +1034,39 @@ class ApiService {
     } catch (e) {
       print("Error Show Diskon: $e");
       return [];
+    }
+  }
+
+  Future<bool> tambahDiskon({
+    required String namaDiskon,
+    required int presentase,
+    required DateTime tanggalMulai,
+    required DateTime tanggalSelesai,
+  }) async {
+    try {
+      String makerID = "23";
+
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('${baseUrl}tambahdiskon'),
+      )
+        ..headers.addAll(await _getAuthHeaders())
+        ..fields.addAll({
+          'nama_diskon': namaDiskon,
+          'persentase_diskon': presentase.toString(),
+          'tanggal_awal': tanggalMulai.toIso8601String().split('T')[0],
+          'tanggal_akhir': tanggalSelesai.toIso8601String().split('T')[0],
+          'makerID': makerID,
+        });
+
+      var response = await request.send();
+      var responseBody = await response.stream.bytesToString();
+      print('Tambah Diskon Response: $responseBody');
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Exception occurred: $e');
+      return false;
     }
   }
 

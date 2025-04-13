@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ukk_kantin/components/navbar_admin.dart';
+import 'package:ukk_kantin/pages/admin/diskon_admin/diskon_admin_content.dart';
 import 'package:ukk_kantin/pages/admin/home/home_admin_content.dart';
 import 'package:ukk_kantin/pages/admin/home/siswa_admin.dart';
 import 'package:ukk_kantin/pages/admin/menu_admin/menu_admin_content.dart';
@@ -77,6 +78,7 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
                   HomeAdminContent(),
                   StatusAdmin(),
                   MenuAdminContent(),
+                  DiskonAdminContent(),
                   SiswaAdminContent(),
                 ],
               ),
