@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:ukk_kantin/components/user_components/checkout_components/button_user.dart';
+import 'package:ukk_kantin/pages/user/checkout/cart_page.dart';
+import 'package:ukk_kantin/models/cart_models.dart';
+import 'package:ukk_kantin/provider/cart_provider.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
 class DetailMenu extends StatefulWidget {
@@ -21,13 +26,6 @@ class _DetailMenuState extends State<DetailMenu> {
     final currencyFormatter =
         NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
     return currencyFormatter.format(amount);
-  }
-
-  void _testOrder() async {
-    final orderService = ApiService();
-    final result = await orderService.pesan();
-
-    print("Hasil API: $result");
   }
 
   @override
@@ -111,35 +109,23 @@ class _DetailMenuState extends State<DetailMenu> {
                   ),
                 ],
               ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  // onPressed: quantity > 0
-                  //     ? () {
-                  //         ScaffoldMessenger.of(context).showSnackBar(
-                  //           const SnackBar(
-                  //             content: Text("Item ditambahkan ke keranjang"),
-                  //           ),
-                  //         );
-                  //       }
-                  //     : null,
-                  onPressed: _testOrder,
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color.fromRGBO(240, 94, 94, 1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                    disabledBackgroundColor:
-                        const Color.fromARGB(255, 217, 217, 217),
-                  ),
-                  child: Text(
-                    "Tambah ke Keranjang",
-                    style: GoogleFonts.nunitoSans(fontSize: 16),
-                  ),
-                ),
+              ButtonUser(
+                text: "Tambah ke Keranjang",
+                onPressed: quantity > 0
+                    ? () {
+                        // Buat CartItem dari Map
+                        final cartItem = CartItem.fromJson(widget.dataMenu);
+
+                        // Tambahkan ke provider
+                        Provider.of<CartProvider>(context, listen: false)
+                            .addToCart(cartItem, quantity);
+
+                        // Pesan
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Item Masuk")),
+                        );
+                      }
+                    : null,
               ),
             ],
           ),

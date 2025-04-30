@@ -36,7 +36,7 @@ class _DetailTransactionState extends State<DetailTranPage> {
 
     for (var item in widget.dataTransaksi["detail_trans"]) {
       jumlah += item["qty"];
-      totalHarga += (item['qty'] ?? 0) * (item['harga_beli'] ?? 0);
+      totalHarga += (item['harga_beli'] ?? 0);
     }
     totalHargaAkhir = totalHarga;
   }

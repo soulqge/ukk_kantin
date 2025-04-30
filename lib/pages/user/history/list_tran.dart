@@ -158,8 +158,7 @@ class _ListTranState extends State<ListTran> {
                     num total = 0;
                     if (order['detail_trans'] != null) {
                       for (var item in order['detail_trans']) {
-                        total = total +=
-                            (item['qty'] ?? 0) * (item['harga_beli'] ?? 0);
+                        total = total += (item['harga_beli'] ?? 0);
                       }
                     }
 

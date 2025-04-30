@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ukk_kantin/models/pesan_models.dart';
 
 class ApiService {
   final String baseUrl = 'https://ukk-p2.smktelkom-mlg.sch.id/api/';
@@ -608,6 +609,32 @@ class ApiService {
     return {};
   }
 
+  Future<List<dynamic>> getDiskon() async {
+    try {
+      final token = await _getToken();
+      final response = await http.post(
+        Uri.parse('${baseUrl}getmenudiskonsiswa'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'makerID': makerID,
+        },
+      );
+
+      print("Response Show Diskon: ${response.body}");
+
+      if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
+        return responseData['data'] ?? [];
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error Show Diskon: $e");
+      return [];
+    }
+  }
+
   //siswa
 
   //stan
@@ -1071,6 +1098,47 @@ class ApiService {
   }
 
   //stan
+
+  //beli
+
+  Future<bool> pesanMakanan(int idStan, List<Pesanan> pesanan) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('access_token');
+
+      if (token == null) {
+        throw Exception('Token tidak ditemukan, harap login kembali.');
+      }
+
+      // Bangun parameter pesan[] dalam bentuk array query
+      final queryParams = {
+        'id_stan': idStan.toString(),
+        for (int i = 0; i < pesanan.length; i++) ...{
+          'pesan[$i][id_menu]': pesanan[i].idMenu.toString(),
+          'pesan[$i][qty]': pesanan[i].qty.toString(),
+        }
+      };
+
+      final url =
+          Uri.parse('${baseUrl}pesan').replace(queryParameters: queryParams);
+
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'makerID': '23',
+      };
+
+      final response = await http.get(url, headers: headers);
+
+      print('[DEBUG] URL: $url');
+      print('[DEBUG] Status Code: ${response.statusCode}');
+      print('[DEBUG] Response Body: ${response.body}');
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print("⚠️ Terjadi kesalahan saat memesan makanan: $e");
+      return false;
+    }
+  }
 
   Future<Map<String, String>> _getAuthHeaders() async {
     String? token = await _getToken();

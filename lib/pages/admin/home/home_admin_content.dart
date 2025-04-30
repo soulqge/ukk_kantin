@@ -90,7 +90,7 @@ class _HomeAdminContentState extends State<HomeAdminContent> {
         context,
         MaterialPageRoute(
           builder: (context) =>
-              EditStan(stanData: _stanList[0]), // Kirim data stan pertama
+              EditStan(stanData: _stanList[0]),
         ),
       );
 

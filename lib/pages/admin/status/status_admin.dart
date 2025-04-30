@@ -59,48 +59,50 @@ class _StatusAdminState extends State<StatusAdmin>
             tabs: statusList.map((status) => Tab(text: status)).toList(),
           ),
           Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: _orderList,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                      child: CircularProgressIndicator(
-                    color: Color.fromRGBO(240, 94, 94, 1),
-                  ));
-                } else if (snapshot.hasError) {
-                  return Center(
-                      child: Text("Terjadi kesalahan: ${snapshot.error}",
-                          style: GoogleFonts.outfit()));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(
-                      child: Text("Tidak ada pesanan.",
-                          style: GoogleFonts.outfit(fontWeight: FontWeight.bold)));
-                }
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: _orderList,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                          child: CircularProgressIndicator(
+                        color: Color.fromRGBO(240, 94, 94, 1),
+                      ));
+                    } else if (snapshot.hasError) {
+                      return Center(
+                          child: Text("Terjadi kesalahan: ${snapshot.error}",
+                              style: GoogleFonts.outfit()));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(
+                          child: Text("Tidak ada pesanan.",
+                              style: GoogleFonts.outfit(
+                                  fontWeight: FontWeight.bold)));
+                    }
 
-                final orders = snapshot.data!;
-                return ListView.builder(
-                  itemCount: orders.length,
-                  itemBuilder: (context, index) {
-                    final order = orders[index];
-                    final detail = order["detail_trans"].isNotEmpty
-                        ? order["detail_trans"][0]
-                        : null;
+                    final orders = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: orders.length,
+                      itemBuilder: (context, index) {
+                        final order = orders[index];
+                        final detailList =
+                            order["detail_trans"] as List<dynamic>;
 
-                    return OrderCard(
-                      id: order["id"].toString(),
-                      total: detail != null
-                          ? detail["harga_beli"].toString()
-                          : "0",
-                      tanggal: order["tanggal"],
-                      waktu: order["created_at"].toString().substring(11, 16),
-                      status: statusList[_tabController.index],
-                      onUpdateStatus: _fetchOrder,
+                        final totalHarga = detailList.fold<int>(
+                          0,
+                          (sum, item) => sum + (item['harga_beli'] as int),
+                        );
+
+                        return OrderCard(
+                          id: order["id"].toString(),
+                          total: totalHarga.toString(),
+                          tanggal: order["tanggal"],
+                          waktu:
+                              order["created_at"].toString().substring(11, 16),
+                          status: statusList[_tabController.index],
+                          onUpdateStatus: _fetchOrder,
+                        );
+                      },
                     );
-                  },
-                );
-              },
-            ),
-          ),
+                  })),
         ],
       ),
     );
