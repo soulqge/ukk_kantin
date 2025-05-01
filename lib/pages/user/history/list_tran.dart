@@ -122,6 +122,7 @@ class _ListTranState extends State<ListTran> {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           HelloAct(),
           SizedBox(height: 12),

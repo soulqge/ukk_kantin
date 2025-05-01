@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import 'package:ukk_kantin/components/navbar_user.dart';
 import 'package:ukk_kantin/pages/user/history/list_tran.dart';
 import 'package:ukk_kantin/pages/user/home/home_page_content.dart';
 import 'package:ukk_kantin/pages/user/home/profile_page_content.dart';
-import 'package:ukk_kantin/pages/user/home/test.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
 class Homepageuser extends StatefulWidget {
@@ -79,7 +76,6 @@ class _HomepageuserState extends State<Homepageuser> {
               makerId: makerId ?? "Unknown",
             ),
             ListTran(),
-            TestStan()
           ],
         ),
         bottomNavigationBar: BottomNavUser(

@@ -6,12 +6,14 @@ import 'package:ukk_kantin/pages/user/pesan/detail_menu.dart';
 import 'package:ukk_kantin/services/api_services.dart';
 
 class Stan extends StatefulWidget {
+  final int stanId;
   final String? category;
   final String searchQuery;
 
   const Stan({
     super.key,
     this.category,
+    required this.stanId,
     this.searchQuery = "",
   });
 
@@ -56,44 +58,55 @@ class _StanState extends State<Stan> {
       final nama = item["nama_makanan"].toLowerCase();
       final isCategoryMatch =
           widget.category == null || item["jenis"] == widget.category;
-      final isSearchMatch = nama.contains(widget.searchQuery);
-      return isCategoryMatch && isSearchMatch;
+      final isSearchMatch = nama.contains(widget.searchQuery.toLowerCase());
+      final isStanMatch = item["id_stan"] == widget.stanId;
+
+      return isCategoryMatch && isSearchMatch && isStanMatch;
     }).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: filteredItems.length,
-              itemBuilder: (context, index) {
-                var item = filteredItems[index];
+          ? const Center(child: CircularProgressIndicator(color: Color.fromRGBO(240, 94, 94, 1),))
+          : filteredItems.isEmpty
+              ? Center(
+                  child: Text(
+                    "Tidak ada menu yang tersedia.",
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: filteredItems.length,
+                  itemBuilder: (context, index) {
+                    var item = filteredItems[index];
 
-                return InkWell(
-                  key: ValueKey(index),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailMenu(dataMenu: item),
-                      ),
-                    );
-                  },
-                  child: Card(
-                    margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: SizedBox(
-                              width: 102,
-                              height: 102,
-                              child:
-                                  item["foto"] == null || item["foto"].isEmpty
+                    return InkWell(
+                      key: ValueKey(index),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailMenu(dataMenu: item),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: SizedBox(
+                                  width: 102,
+                                  height: 102,
+                                  child: item["foto"] == null ||
+                                          item["foto"].isEmpty
                                       ? Image.asset("assets/noImage.png",
                                           fit: BoxFit.cover)
                                       : Image.network(
@@ -105,50 +118,53 @@ class _StanState extends State<Stan> {
                                                       "assets/placeholder.png",
                                                       fit: BoxFit.cover),
                                         ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item["nama_makanan"],
-                                  style: GoogleFonts.nunitoSans(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                Text("#${item["jenis"]}",
-                                    style: GoogleFonts.nunitoSans(
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item["nama_makanan"],
+                                      style: GoogleFonts.nunitoSans(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w700,
-                                        color: const Color.fromRGBO(
-                                            240, 94, 94, 1))),
-                                SizedBox(
-                                  height: 18,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    Text("#${item["jenis"]}",
+                                        style: GoogleFonts.nunitoSans(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                            color: const Color.fromRGBO(
+                                                240, 94, 94, 1))),
+                                    SizedBox(
+                                      height: 18,
+                                    ),
+                                    Text(formatCurrency(item["harga"]),
+                                        style: GoogleFonts.sen(
+                                            fontSize: 17.89,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
                                 ),
-                                Text(formatCurrency(item["harga"]),
-                                    style: GoogleFonts.sen(
-                                        fontSize: 17.89,
-                                        fontWeight: FontWeight.bold)),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/cart_page');
         },
         backgroundColor: Colors.white,
-        child: Icon(SolarIconsBold.cart, color: Colors.black,),
+        child: Icon(
+          SolarIconsBold.cart,
+          color: Colors.black,
+        ),
       ),
     );
   }
