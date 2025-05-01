@@ -45,6 +45,7 @@ dependencies:
   flutter_slidable: ^3.1.2
   provider: ^6.1.5  
   flutter_launcher_icons: ^0.14.3
+  month_picker_dialog: ^6.0.2
   
   # optionally, as transparency is not allowed on app store
   # remove_alpha_ios: true

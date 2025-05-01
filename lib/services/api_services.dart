@@ -26,7 +26,7 @@ class ApiService {
   //token
 
   //siswa
-  Future<bool> registerStudent({
+  Future<Map<String, dynamic>> registerStudent({
     required String namaSiswa,
     required String alamat,
     required String telp,
@@ -54,10 +54,13 @@ class ApiService {
       var responseBody = await response.stream.bytesToString();
       print('Register Siswa Response: $responseBody');
 
-      return response.statusCode == 200;
+      return jsonDecode(responseBody);
     } catch (e) {
       print('Exception occurred: $e');
-      return false;
+      return {
+        'status': false,
+        'message': 'Terjadi kesalahan pada koneksi atau server.'
+      };
     }
   }
 
@@ -418,48 +421,6 @@ class ApiService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> cetakNota(String id) async {
-    try {
-      final token = await _getToken();
-      if (token == null) {
-        print("Token tidak ditemukan, harap login kembali.");
-        return [];
-      }
-
-      final prefs = await SharedPreferences.getInstance();
-      final storedMakerId = prefs.getString("maker_id") ?? makerID;
-
-      final response = await http.get(
-        Uri.parse('${baseUrl}cetaknota/$id'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-          'makerID': storedMakerId,
-        },
-      );
-
-      print("Response cetakNota: ${response.body}");
-
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-
-        if (jsonResponse is Map<String, dynamic> &&
-            jsonResponse.containsKey("data")) {
-          final data = jsonResponse["data"];
-
-          if (data is List) {
-            return data.cast<Map<String, dynamic>>();
-          } else if (data is Map<String, dynamic>) {
-            return [data];
-          }
-        }
-      }
-      return [];
-    } catch (e) {
-      print("Error cetakNota: $e");
-      return [];
-    }
-  }
 
   Future<List<int>> getAllFoodMenuIds() async {
     final prefs = await SharedPreferences.getInstance();
@@ -471,14 +432,12 @@ class ApiService {
     };
 
     try {
-      // Fetch food menu
       var responseFood = await http.post(
         Uri.parse("$baseUrl/getmenufood"),
         body: {"search": ""},
         headers: headers,
       );
 
-      // Fetch drink menu
       var responseDrink = await http.post(
         Uri.parse("$baseUrl/getmenudrink"),
         body: {"search": ""},
@@ -639,7 +598,7 @@ class ApiService {
 
   //stan
 
-  Future<bool> registerStan({
+  Future<Map<String, dynamic>> registerStan({
     required String namaStan,
     required String namaPemilik,
     required String telp,
@@ -662,10 +621,10 @@ class ApiService {
       var responseBody = await response.stream.bytesToString();
       print('Register Stand Response: $responseBody');
 
-      return response.statusCode == 200;
+      return jsonDecode(responseBody);
     } catch (e) {
       print('Exception occurred: $e');
-      return false;
+      return {'status': false, 'message': 'Terjadi kesalahan pada server.'};
     }
   }
 

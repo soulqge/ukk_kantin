@@ -32,6 +32,43 @@ class _SignupPageAdminState extends State<SignupPageAdmin> {
     String noTelp = noTelpController.text.trim();
     String password = passwordController.text.trim();
 
+    // ✅ VALIDASI LOKAL
+    if (namaLengkap.isEmpty ||
+        namaStan.isEmpty ||
+        username.isEmpty ||
+        noTelp.isEmpty ||
+        password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+          content: Text(
+            'Semua field harus diisi.',
+            style: GoogleFonts.nunitoSans(),
+          ),
+        ),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+          content: Text(
+            'Password minimal 6 karakter.',
+            style: GoogleFonts.nunitoSans(),
+          ),
+        ),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
     try {
       var response = await ApiService().registerStan(
         namaPemilik: namaLengkap,
@@ -43,26 +80,57 @@ class _SignupPageAdminState extends State<SignupPageAdmin> {
 
       print("Response dari API: $response");
 
-      // Abaikan response, langsung tampilkan pesan sukses dan navigasikan
+      // ✅ VALIDASI DARI SERVER
+      if (response['status'] == false) {
+        String errorMessage = 'Registrasi gagal.';
+
+        if (response['message'] != null) {
+          if (response['message']['username'] != null &&
+              response['message']['username'].isNotEmpty) {
+            errorMessage = response['message']['username'][0];
+          } else if (response['message'] is String) {
+            errorMessage = response['message'];
+          }
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              errorMessage,
+              style: GoogleFonts.nunitoSans(),
+            ),
+          ),
+        );
+
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+
+      // ✅ BERHASIL
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
-            content: Text(
-              'Registrasi berhasil! Silakan login.',
-              style: GoogleFonts.nunitoSans(),
-            )),
+          backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+          content: Text(
+            'Registrasi berhasil! Silakan login.',
+            style: GoogleFonts.nunitoSans(),
+          ),
+        ),
       );
 
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/login_admin');
     } catch (e) {
       print("Error saat register: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
-            content: Text(
-              'Terjadi kesalahan saat registrasi.',
-              style: GoogleFonts.nunitoSans(),
-            )),
+          backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+          content: Text(
+            'Terjadi kesalahan saat registrasi.',
+            style: GoogleFonts.nunitoSans(),
+          ),
+        ),
       );
     }
 

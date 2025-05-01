@@ -51,11 +51,28 @@ class _TambahSiswaAdminState extends State<TambahSiswaAdmin> {
         telp.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
-            content: Text(
-              'Harap isi semua field!',
-              style: GoogleFonts.nunitoSans(),
-            )),
+          backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+          content: Text(
+            'Harap isi semua field!',
+            style: GoogleFonts.nunitoSans(),
+          ),
+        ),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+          content: Text(
+            'Password harus minimal 6 karakter.',
+            style: GoogleFonts.nunitoSans(),
+          ),
+        ),
       );
       setState(() {
         isLoading = false;
@@ -73,27 +90,51 @@ class _TambahSiswaAdminState extends State<TambahSiswaAdmin> {
         foto: _image,
       );
 
-      print("Response dari API: $response");
+      if (response['status'] == false) {
+        String errorMessage = 'Registrasi gagal.';
+
+        if (response['message'] != null &&
+            response['message']['username'] != null &&
+            response['message']['username'].isNotEmpty) {
+          errorMessage = response['message']['username'][0];
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              errorMessage,
+              style: GoogleFonts.nunitoSans(),
+            ),
+          ),
+        );
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
-            content: Text(
-              'Tambah Siswa Berhasil',
-              style: GoogleFonts.nunitoSans(),
-            )),
+          backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+          content: Text(
+            'Registrasi berhasil! Silakan login.',
+            style: GoogleFonts.nunitoSans(),
+          ),
+        ),
       );
 
-      Navigator.pop(context);
+      Navigator.pushReplacementNamed(context, '/login_siswa');
     } catch (e) {
       print("Error saat register: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
-            content: Text(
-              'Terjadi kesalahan saat registrasi.',
-              style: GoogleFonts.nunitoSans(),
-            )),
+          backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+          content: Text(
+            'Terjadi kesalahan saat registrasi.',
+            style: GoogleFonts.nunitoSans(),
+          ),
+        ),
       );
     }
 
