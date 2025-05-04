@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ukk_kantin/components/navbar_admin.dart';
@@ -31,7 +30,7 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
 
   Future<void> checkAuthentication() async {
     final prefs = await SharedPreferences.getInstance();
-    final apiService = ApiService();
+    final apiService = ApiServiceAdmin();
     final stanList = await apiService.getStan();
 
     if (stanList.isEmpty) {
@@ -47,7 +46,6 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
         userName = stanList[0]["nama_stan"] ?? "Kantin";
         makerId = prefs.getString("makerID");
 
-        // Simpan id_stan ke SharedPreferences
         prefs.setString("username", userName!);
         prefs.setInt("id_stan", stanList[0]["id"]);
       });
@@ -78,7 +76,7 @@ class _HomeAdminPageState extends State<HomeAdminPage> {
                   HomeAdminContent(),
                   StatusAdmin(),
                   MenuAdminContent(),
-                  DiskonAdminContent(),
+                  RekapOrder(),
                   SiswaAdminContent(),
                 ],
               ),

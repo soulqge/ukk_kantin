@@ -44,7 +44,7 @@ class _OrderCardState extends State<OrderCard> {
 
   Future<void> _updateStatus(String newStatus) async {
     try {
-      await ApiService().updateOrderStatus(widget.id, newStatus.toLowerCase()); // Panggil API
+      await ApiServiceAdmin().updateOrderStatus(widget.id, newStatus.toLowerCase()); // Panggil API
       setState(() {
         selectedStatus = newStatus;
       });

@@ -7,16 +7,16 @@ import 'package:ukk_kantin/components/login_components/button_login.dart';
 import 'package:ukk_kantin/components/login_components/form_box_login.dart';
 import 'package:ukk_kantin/services/api_services_user.dart';
 
-class FormEditSiswa extends StatefulWidget {
+class FormEditSiswaUser extends StatefulWidget {
   final Map<String, dynamic> siswaData;
 
-  const FormEditSiswa({super.key, required this.siswaData});
+  const FormEditSiswaUser({super.key, required this.siswaData});
 
   @override
-  State<FormEditSiswa> createState() => _FormEditSiswaState();
+  State<FormEditSiswaUser> createState() => _FormEditSiswaState();
 }
 
-class _FormEditSiswaState extends State<FormEditSiswa> {
+class _FormEditSiswaState extends State<FormEditSiswaUser> {
   late TextEditingController namaLengkapController;
   late TextEditingController alamatController;
   late TextEditingController usernameController;
@@ -60,7 +60,7 @@ class _FormEditSiswaState extends State<FormEditSiswa> {
     print("Foto: ${_image?.path ?? 'Tidak ada perubahan'}");
 
     try {
-      await ApiServicesUser().updateSiswaAdmin(
+      await ApiServicesUser().updateSiswaUser(
         id: widget.siswaData['id'],
         namaSiswa: namaLengkapController.text.trim(),
         alamat: alamatController.text.trim(),

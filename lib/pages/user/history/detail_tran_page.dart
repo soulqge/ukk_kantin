@@ -46,7 +46,7 @@ class _DetailTransactionState extends State<DetailTranPage> {
     DateTime date = DateTime.parse(widget.dataTransaksi["tanggal"]);
     String formattedDate =
         "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-    return Scaffold(                                                                            
+    return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -100,8 +100,8 @@ class _DetailTransactionState extends State<DetailTranPage> {
                           ),
                           const SizedBox(height: 18),
                           _buildPaymentDetails(),
-                          const SizedBox(height: 18),
-                          _buildDiskon(),
+                          // const SizedBox(height: 18),
+                          // _buildDiskon(),
                           const SizedBox(height: 18),
                           _buildStatus()
                         ],
@@ -201,23 +201,23 @@ class _DetailTransactionState extends State<DetailTranPage> {
     );
   }
 
-  Widget _buildDiskon() {
-    return Row(
-      children: [
-        Icon(
-          Icons.discount,
-          color: Color.fromRGBO(240, 94, 94, 1),
-        ),
-        SizedBox(width: 5),
-        Text('Diskon Hari guru', // placeholder
-            softWrap: true,
-            style: GoogleFonts.nunitoSans(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            )),
-      ],
-    );
-  }
+  // Widget _buildDiskon() {
+  //   return Row(
+  //     children: [
+  //       Icon(
+  //         Icons.discount,
+  //         color: Color.fromRGBO(240, 94, 94, 1),
+  //       ),
+  //       SizedBox(width: 5),
+  //       Text('Diskon Hari guru', // placeholder
+  //           softWrap: true,
+  //           style: GoogleFonts.nunitoSans(
+  //             fontSize: 14,
+  //             fontWeight: FontWeight.bold,
+  //           )),
+  //     ],
+  //   );
+  // }
 
   Widget _buildStatus() {
     return Container(

@@ -67,7 +67,7 @@ class _AddMenuState extends State<AddMenu> {
       return;
     }
 
-    bool success = await ApiService().tambahMenu(
+    bool success = await ApiServiceAdmin().tambahMenu(
       namaMakanan: nameController.text,
       jenis: selectedType!,
       harga: priceController.text,

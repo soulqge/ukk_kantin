@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart'; // <== ADD THIS
 import 'package:provider/provider.dart';
 import 'package:ukk_kantin/pages/admin/diskon_admin/add_diskon.dart';
 import 'package:ukk_kantin/pages/admin/home/home_admin.dart';
@@ -15,6 +16,9 @@ import 'package:ukk_kantin/provider/cart_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting('id', null);
+
   runApp(
     MultiProvider(
       providers: [

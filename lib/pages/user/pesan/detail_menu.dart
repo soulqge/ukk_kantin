@@ -3,10 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ukk_kantin/components/user_components/checkout_components/button_user.dart';
-import 'package:ukk_kantin/pages/user/checkout/cart_page.dart';
 import 'package:ukk_kantin/models/cart_models.dart';
 import 'package:ukk_kantin/provider/cart_provider.dart';
-import 'package:ukk_kantin/services/api_services.dart';
 
 class DetailMenu extends StatefulWidget {
   final Map<String, dynamic> dataMenu;

@@ -6,7 +6,7 @@ import 'package:ukk_kantin/components/user_components/checkout_components/button
 import 'package:ukk_kantin/components/user_components/checkout_components/dropdown_user.dart';
 import 'package:ukk_kantin/models/pesan_models.dart';
 import 'package:ukk_kantin/provider/cart_provider.dart';
-import 'package:ukk_kantin/services/api_services.dart';
+import 'package:ukk_kantin/services/api_services_user.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -19,7 +19,7 @@ final String baseUrlRil = "https://ukk-p2.smktelkom-mlg.sch.id/";
 int quantity = 0;
 String? selectedDiskon;
 
-List<String> diskonList = [];
+List<Map<String, dynamic>> diskonList = [];
 
 class _CartPageState extends State<CartPage> {
   @override
@@ -29,27 +29,50 @@ class _CartPageState extends State<CartPage> {
   }
 
   Future<void> fetchDiskon() async {
-    final apiService = ApiService();
+    final apiService = ApiServicesUser();
     List<dynamic> fetchedDiskonList = await apiService.getDiskon();
 
-    List<String> diskonNamaList = fetchedDiskonList
-        .map((item) => item['nama_diskon'].toString())
+    DateTime now = DateTime.now();
+    List<Map<String, dynamic>> activeDiskon = fetchedDiskonList
+        .where((item) {
+          DateTime start = DateTime.parse(item['tanggal_awal']);
+          DateTime end = DateTime.parse(item['tanggal_akhir']);
+          return now.isAfter(start) && now.isBefore(end);
+        })
+        .map((item) => {
+              'nama': item['nama_diskon'],
+              'persentase': item['persentase_diskon'],
+            })
         .toList();
 
     setState(() {
-      diskonList = diskonNamaList;
+      diskonList = activeDiskon;
     });
   }
 
   String formatCurrency(int amount) {
-    final currencyFormatter =
-        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+    final currencyFormatter = NumberFormat.currency(
+        locale: 'id_ID', symbol: 'Rp. ', decimalDigits: 0);
     return currencyFormatter.format(amount);
+  }
+
+  int calculateTotalWithDiscount(CartProvider cartProvider) {
+    int total = cartProvider.total;
+    if (selectedDiskon != null) {
+      final diskon = diskonList.firstWhere(
+        (element) => element['nama'] == selectedDiskon,
+        orElse: () => {'persentase': 0},
+      );
+      int persentase = diskon['persentase'] ?? 0;
+      int diskonAmount = (total * persentase ~/ 100);
+      return total - diskonAmount;
+    }
+    return total;
   }
 
   Future<void> selesaikanPesanan() async {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    final apiService = ApiService();
+    final apiService = ApiServicesUser();
 
     if (cartProvider.items.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -68,12 +91,22 @@ class _CartPageState extends State<CartPage> {
     if (success) {
       cartProvider.clearCart();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("✅ Pesanan berhasil dibuat!")),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(36, 150, 137, 1),
+            content: Text(
+              "Pesanan berhasil dibuat!",
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
-      Navigator.pop(context); // atau arahkan ke halaman lain
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("❌ Gagal membuat pesanan.")),
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              "Gagal membuat pesanan.",
+              style: GoogleFonts.nunitoSans(),
+            )),
       );
     }
   }
@@ -226,22 +259,49 @@ class _CartPageState extends State<CartPage> {
                       fontSize: 18, fontWeight: FontWeight.w600)),
               SizedBox(height: 16),
               DropdownUser(
-                  hint: "Tidak Ada Diskon",
-                  items: diskonList,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDiskon = value;
-                    });
-                  },
-                  value: selectedDiskon),
+                hint: "Tidak Ada Diskon",
+                items: diskonList,
+                onChanged: (value) {
+                  setState(() {
+                    selectedDiskon = value;
+                  });
+                },
+                value: selectedDiskon,
+              ),
               SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Total",
                       style: GoogleFonts.outfit(
-                          fontWeight: FontWeight.bold, fontSize: 24)),
+                          fontWeight: FontWeight.bold, fontSize: 16)),
                   Text(formatCurrency(cartProvider.total),
+                      style: GoogleFonts.outfit(
+                          fontWeight: FontWeight.bold, fontSize: 16)),
+                ],
+              ),
+              if (selectedDiskon != null) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Diskon ($selectedDiskon)",
+                        style: GoogleFonts.outfit(fontSize: 16)),
+                    Text(
+                      "- ${formatCurrency(cartProvider.total * (diskonList.firstWhere((e) => e['nama'] == selectedDiskon)['persentase']) ~/ 100)}",
+                      style:
+                          GoogleFonts.outfit(fontSize: 16, color: Colors.green),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+              ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Subtotal",
+                      style: GoogleFonts.outfit(
+                          fontWeight: FontWeight.bold, fontSize: 24)),
+                  Text(formatCurrency(calculateTotalWithDiscount(cartProvider)),
                       style: GoogleFonts.outfit(
                           fontWeight: FontWeight.bold, fontSize: 24)),
                 ],

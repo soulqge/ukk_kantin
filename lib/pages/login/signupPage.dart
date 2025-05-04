@@ -6,7 +6,7 @@ import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/login_components/button_login.dart';
 import 'package:ukk_kantin/components/login_components/check.dart';
 import 'package:ukk_kantin/components/login_components/form_box_login.dart';
-import 'package:ukk_kantin/services/api_services.dart';
+import 'package:ukk_kantin/services/api_services_user.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -82,7 +82,7 @@ class _SignupPageState extends State<SignupPage> {
     }
 
     try {
-      var response = await ApiService().registerStudent(
+      var response = await ApiServicesUser().registerStudent(
         namaSiswa: namaLengkap,
         alamat: alamat,
         telp: telp,

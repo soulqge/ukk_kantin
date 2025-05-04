@@ -4,7 +4,7 @@ import 'package:solar_icons/solar_icons.dart';
 
 class DropdownUser extends StatelessWidget {
   final String? value;
-  final List<String> items;
+  final List<Map<String, dynamic>> items;
   final String hint;
   final Function(String?) onChanged;
 
@@ -35,13 +35,15 @@ class DropdownUser extends StatelessWidget {
               hint,
               style: GoogleFonts.nunitoSans(fontSize: 14),
             ),
-            items: items.map((String item) {
-              return DropdownMenuItem(
-                value: item,
+            items: items.map((item) {
+              final nama = item['nama'];
+              final persen = item['persentase'];
+              return DropdownMenuItem<String>(
+                value: nama,
                 child: Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12)
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
@@ -49,7 +51,7 @@ class DropdownUser extends StatelessWidget {
                           size: 20, color: Color.fromRGBO(240, 94, 94, 1)),
                       const SizedBox(width: 10),
                       Text(
-                        item,
+                        "$nama - ${persen.toString()}%",
                         style: GoogleFonts.nunitoSans(
                           fontSize: 14,
                           color: Colors.black87,

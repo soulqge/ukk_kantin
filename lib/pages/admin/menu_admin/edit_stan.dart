@@ -42,7 +42,7 @@ class _EditMenuState extends State<EditStan> {
     print("No Telp: ${noTelpController.text}");
 
     try {
-      await ApiService().updateStan(
+      await ApiServiceAdmin().updateStan(
         id: widget.stanData['id'],
         namaPemilik: namaLengkapController.text.trim(),
         namaStan: namaStanController.text.trim(),

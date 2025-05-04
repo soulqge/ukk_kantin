@@ -70,7 +70,7 @@ class _SignupPageAdminState extends State<SignupPageAdmin> {
     }
 
     try {
-      var response = await ApiService().registerStan(
+      var response = await ApiServiceAdmin().registerStan(
         namaPemilik: namaLengkap,
         namaStan: namaStan,
         username: username,

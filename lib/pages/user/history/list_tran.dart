@@ -5,7 +5,7 @@ import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/user_components/history_page_components/button_search.dart';
 import 'package:ukk_kantin/components/user_components/history_page_components/hello_act.dart';
 import 'package:ukk_kantin/pages/user/history/detail_tran_page.dart';
-import 'package:ukk_kantin/services/api_services.dart';
+import 'package:ukk_kantin/services/api_services_user.dart';
 
 class ListTran extends StatefulWidget {
   const ListTran({
@@ -34,7 +34,7 @@ class _ListTranState extends State<ListTran> {
 
   void _fetchOrder() {
     setState(() {
-      _orderList = ApiService()
+      _orderList = ApiServicesUser()
           .getOrderSiswa(_selectedStatus.toLowerCase())
           .then(_enrichOrders);
     });
@@ -46,7 +46,7 @@ class _ListTranState extends State<ListTran> {
       if (order['detail_trans'] is List) {
         for (var item in order['detail_trans']) {
           item['nama_menu'] =
-              await ApiService().getFoodName(item['id_menu']) ?? '–';
+              await ApiServicesUser().getFoodName(item['id_menu']) ?? '–';
         }
       }
     }
@@ -105,7 +105,7 @@ class _ListTranState extends State<ListTran> {
 
     final year = picked.year, month = picked.month;
     setState(() {
-      _orderList = ApiService()
+      _orderList = ApiServicesUser()
           .getOrderSiswa(_selectedStatus.toLowerCase())
           .then((orders) async {
         final enriched = await _enrichOrders(orders);

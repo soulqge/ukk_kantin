@@ -35,7 +35,7 @@ class _StatusAdminState extends State<StatusAdmin>
   void _fetchOrder() {
     String selectedStatus = statusList[_tabController.index].toLowerCase();
     setState(() {
-      _orderList = ApiService().getOrderAdmin(selectedStatus);
+      _orderList = ApiServiceAdmin().getOrderAdmin(selectedStatus);
     });
   }
 

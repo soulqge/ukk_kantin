@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/admin_components/hello_admin.dart';
 import 'package:ukk_kantin/pages/admin/siswa/edit_siswa.dart';
-import 'package:ukk_kantin/services/api_services.dart';
+import 'package:ukk_kantin/services/api_services_user.dart';
 
 class SiswaAdminContent extends StatefulWidget {
   @override
@@ -23,17 +23,17 @@ class _SiswaAdminContentState extends State<SiswaAdminContent> {
 
   void _fetchSiswa() {
     setState(() {
-      _siswaList = ApiService().getSiswa();
+      _siswaList = ApiServicesUser().getSiswa();
     });
   }
 
   Future<void> _deleteSiswa(String siswaId) async {
-    final apiService = ApiService();
+    final apiService = ApiServicesUser();
     bool success = await apiService.hapusSiswa(siswaId: siswaId);
 
     if (success) {
       setState(() {
-        _siswaList = ApiService().getSiswa();
+        _siswaList = ApiServicesUser().getSiswa();
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

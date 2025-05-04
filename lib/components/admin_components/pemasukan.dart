@@ -5,8 +5,9 @@ import 'package:solar_icons/solar_icons.dart';
 
 class Pemasukan extends StatefulWidget {
   final int penghasilan;
+  final String hint;
 
-  const Pemasukan({super.key, required this.penghasilan});
+  const Pemasukan({super.key, required this.penghasilan, required this.hint});
 
   @override
   _PemasukanState createState() => _PemasukanState();
@@ -36,7 +37,7 @@ class _PemasukanState extends State<Pemasukan> {
             Row(
               children: [
                 Text(
-                  "Pemasukan Bulan Ini",
+                  widget.hint,
                   style: GoogleFonts.nunitoSans(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

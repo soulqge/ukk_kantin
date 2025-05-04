@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/components/login_components/button_login.dart';
 import 'package:ukk_kantin/components/login_components/form_box_login.dart';
-import 'package:ukk_kantin/services/api_services.dart';
+import 'package:ukk_kantin/services/api_services_user.dart';
 
 class TambahSiswaAdmin extends StatefulWidget {
   const TambahSiswaAdmin({super.key});
@@ -81,7 +81,7 @@ class _TambahSiswaAdminState extends State<TambahSiswaAdmin> {
     }
 
     try {
-      var response = await ApiService().registerStudent(
+      var response = await ApiServicesUser().registerStudent(
         namaSiswa: namaLengkap,
         alamat: alamat,
         telp: telp,

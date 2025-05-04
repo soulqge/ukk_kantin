@@ -6,6 +6,7 @@ import 'package:ukk_kantin/components/login_components/button_login.dart';
 import 'package:ukk_kantin/components/login_components/check.dart';
 import 'package:ukk_kantin/components/login_components/form_box_login.dart';
 import 'package:ukk_kantin/services/api_services.dart';
+import 'package:ukk_kantin/services/api_services_user.dart';
 
 class Loginpageadmin extends StatefulWidget {
   const Loginpageadmin({super.key});
@@ -38,10 +39,10 @@ class _LoginpageadminState extends State<Loginpageadmin> {
     var response;
     if (selectedRole == 'siswa') {
       response =
-          await ApiService().loginSiswa(username: username, password: password);
+          await ApiServicesUser().loginSiswa(username: username, password: password);
     } else {
       response =
-          await ApiService().loginStand(username: username, password: password);
+          await ApiServiceAdmin().loginStand(username: username, password: password);
     }
     print("Login Response: $response");
 

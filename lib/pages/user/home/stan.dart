@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:solar_icons/solar_icons.dart';
 import 'package:ukk_kantin/pages/user/pesan/detail_menu.dart';
-import 'package:ukk_kantin/services/api_services.dart';
+import 'package:ukk_kantin/services/api_services_user.dart';
 
 class Stan extends StatefulWidget {
   final int stanId;
@@ -33,7 +33,7 @@ class _StanState extends State<Stan> {
   }
 
   Future<void> fetchMenus() async {
-    final apiService = ApiService();
+    final apiService = ApiServicesUser();
     List<dynamic> makanan = await apiService.getMenuMakanan();
     List<dynamic> minuman = await apiService.getMenuMinuman();
     List<Map<String, dynamic>> response = [...makanan, ...minuman];
@@ -67,7 +67,10 @@ class _StanState extends State<Stan> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color.fromRGBO(240, 94, 94, 1),))
+          ? const Center(
+              child: CircularProgressIndicator(
+              color: Color.fromRGBO(240, 94, 94, 1),
+            ))
           : filteredItems.isEmpty
               ? Center(
                   child: Text(

@@ -3,8 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ukk_kantin/components/user_components/home_page_components/hello_user.dart';
 import 'package:ukk_kantin/components/user_components/home_page_components/search_bar_user.dart';
-import 'package:ukk_kantin/pages/user/pesan/stan.dart';
-import 'package:ukk_kantin/services/api_services.dart';
+import 'package:ukk_kantin/pages/user/home/edit_siswa_user.dart';
+import 'package:ukk_kantin/pages/user/home/stan.dart';
+import 'package:ukk_kantin/services/api_services_user.dart';
 
 class HomePageContent extends StatefulWidget {
   final String userName;
@@ -21,9 +22,11 @@ class HomePageContent extends StatefulWidget {
 }
 
 class _HomePageContentState extends State<HomePageContent> {
+  String namaSiswa = "Loading...";
   String searchQuery = "";
   List<Map<String, dynamic>> stanList = [];
   bool isLoading = true;
+  List<Map<String, dynamic>> _siswaList = [];
 
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
@@ -37,10 +40,11 @@ class _HomePageContentState extends State<HomePageContent> {
   void initState() {
     super.initState();
     fetchStans();
+    loadUserData();
   }
 
   Future<void> fetchStans() async {
-    final api = ApiService();
+    final api = ApiServicesUser();
     final result = await api.getAllStan();
     if (mounted) {
       setState(() {
@@ -105,6 +109,45 @@ class _HomePageContentState extends State<HomePageContent> {
     );
   }
 
+  void _editSiswa() async {
+    if (_siswaList.isNotEmpty) {
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => FormEditSiswaUser(siswaData: _siswaList[0])),
+      );
+
+      if (result == true) {
+        loadUserData();
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            backgroundColor: Color.fromRGBO(240, 94, 94, 1),
+            content: Text(
+              'Data Siswa tidak ditemukan',
+              style: GoogleFonts.nunitoSans(),
+            )),
+      );
+    }
+  }
+
+  Future<void> loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String username = prefs.getString("username") ?? "Siswa";
+    final apiService = ApiServicesUser();
+
+    final List<Map<String, dynamic>> siswaList =
+        List<Map<String, dynamic>>.from(await apiService.getProfile());
+
+    setState(() {
+      _siswaList = siswaList;
+      namaSiswa = stanList.isNotEmpty
+          ? stanList[0]["nama_siswa"] ?? username
+          : username;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -120,7 +163,8 @@ class _HomePageContentState extends State<HomePageContent> {
                 child: HelloUser(
                   user: widget.userName,
                   icon: Icons.person,
-                  iconColor: Colors.white,
+                  iconColor: Color.fromRGBO(240, 94, 94, 1),
+                  onEdit: _editSiswa,
                   onLogout: logout,
                 ),
               ),

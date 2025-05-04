@@ -83,7 +83,7 @@ class _AddDiskonState extends State<AddDiskon> {
 
     setState(() => isLoading = true);
 
-    bool success = await ApiService().tambahDiskon(
+    bool success = await ApiServiceAdmin().tambahDiskon(
       namaDiskon: diskonController.text,
       presentase: int.parse(presentaseController.text),
       tanggalMulai: tanggalMulai!,
